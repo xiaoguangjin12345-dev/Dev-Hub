@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.outsourcing.mapper.ProjectMapper">
+
+    <!-- 添加项目记录 -->
+    <insert id="insertProject" useGeneratedKeys="true" keyProperty="ProjectID" keyColumn="ProjectID">
+        insert into `Project`(
+            `ProjectName`, `PMID`, `Status`,
+            `ClientName`, `ClientEmail`, `ClientPhone`,
+            `ProjectDescription`, `Budget`, `Personnel`,
+            `StartDate`, `EndDate`,
+            `CreateTime`
+        ) values (
+            #{dto.ProjectName}, #{dto.PMID}, #{dto.Status},
+            #{dto.ClientName}, #{dto.ClientEmail}, #{dto.ClientPhone},
+            #{dto.ProjectDescription}, #{dto.Budget}, #{dto.Personnel},
+            #{dto.StartDate}, #{dto.EndDate},
+            #{dto.CreateTime}
+        )
+
+    </insert>
+
+    <!-- 修改项目记录 -->
+    <update id="updateProject">
+        update `Project`
+        <set>
+            <if test = "requirementDocUrl != null and !requirementDocUrl.isEmpty()">
+                `RequirementDocUrl` = #{requirementDocUrl},
+            </if>
+            `ProjectName` = #{dto.projectName},
+            `Status` = #{status},
+            `ClientName` = #{dto.clientName},
+            `ClientEmail` = #{dto.clientEmail},
+            `ClientPhone` = #{dto.clientPhone},
+            `ProjectDescription` = #{dto.projectDescription},
+            `Budget` = #{dto.budget},
+            `Personnel` = #{dto.personnel},
+            `StartDate` = #{dto.startDate},
+            `EndDate` = #{dto.endDate}
+        </set>
+        where `ProjectID` = #{projectId}
+        <!-- 数据库层校验 -->
+        and `Status` in (1,2)
+    </update>
+
+    <!-- 项目列表 返回类型 -->
+    <resultMap id="ProjectListVOMap" type="com.xgj.outsourcing.pojo.vo.project.ProjectListVO">
+        <id column="ProjectID" property="projectId" />
+        <result column="ProjectName" property="projectName" />
+        <result column="ClientName" property="clientName" />
+        <result column="ProjectDescription" property="projectDescription" />
+        <result column="Budget" property="budget" />
+        <result column="Status" property="status" />
+        <result column="PmName" property="pmName" />
+        <result column="StartDate" property="startDate" />
+        <result column="EndDate" property="endDate" />
+        <result column="CreateTime" property="createTime" />
+    </resultMap>
+
+    <!-- 项目列表 参数化查询条件 -->
+    <sql id="projectListWhere">
+        <where>
+            <!-- 项目经理 数据隔离条件 -->
+            <if test="role == 2">
+                p.`PMID` = #{userId}
+            </if>
+
+            <!-- 开发人员 数据隔离条件 -->
+            <if test="role == 3">
+                <!-- 开发人员目前无权限查看项目列表 -->
+                1 = 2
+            </if>
+
+            <if test="dto.projectName != null and dto.projectName != ''">
+                <!-- 模糊匹配 -->
+                and p.`ProjectName` like concat('%', #{dto.projectName}, '%')
+            </if>
+
+            <if test="dto.statuses != null and dto.statuses.size() > 0">
+                and p.`Status` in
+                <foreach collection="dto.statuses" item="status" open="(" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+
+            <if test="dto.pmIds != null and dto.pmIds.size() > 0">
+                and p.`PMID` in
+                <foreach collection="dto.pmIds" item="pmId" open="(" separator="," close=")">
+                    #{pmId}
+                </foreach>
+            </if>
+
+        </where>
+    </sql>
+
+    <!-- 参数化查询 项目列表（分页） -->
+    <select id="getProjectsByQuery" resultMap="ProjectListVOMap">
+        select p.`ProjectID`,p.`ProjectName`,p.`ClientName`,
+               p.`ProjectDescription`,p.`Budget`,p.`Status`,
+               u.`RealName` as `PmName`,p.`StartDate`,p.`EndDate`,p.`CreateTime`
+        from `Project` p
+        left join `User` u
+        on p.`PMID` = u.`UserID`
+
+        <include refid="projectListWhere" />
+        order by p.`CreateTime` desc
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 参数化查询 项目总数 -->
+    <select id="countProjectsByQuery" resultType="long">
+        select count(1)
+        from `Project` p
+        left join `User` u
+        on p.`PMID` = u.`UserID`
+
+        <include refid="projectListWhere" />
+    </select>
+
+
+    <!-- 项目详情 返回类型 -->
+    <resultMap id="ProjectDetailsVOMap" type="com.xgj.outsourcing.pojo.vo.project.ProjectDetailsVO">
+        <id column="ProjectID" property="projectId" />
+        <result column="ProjectName" property="projectName" />
+        <result column="ClientName" property="clientName" />
+        <result column="ProjectDescription" property="projectDescription" />
+        <result column="Budget" property="budget" />
+        <result column="Status" property="status" />
+        <result column="PmName" property="pmName" />
+        <result column="StartDate" property="startDate" />
+        <result column="EndDate" property="endDate" />
+        <result column="CreateTime" property="createTime" />
+        <result column="ClientEmail" property="clientEmail" />
+        <result column="ClientPhone" property="clientPhone" />
+        <result column="Personnel" property="personnel" />
+        <result column="RequirementDocUrl" property="requirementDocUrl" />
+    </resultMap>
+
+    <!-- 根据编号查询项目详情 -->
+    <select id="getProjectById" resultMap="ProjectDetailsVOMap">
+        select p.`ProjectID`,p.`ProjectName`, u.`RealName` as `PmName`,
+               p.`ClientName`, p.`ClientEmail`, p.`ClientPhone`,
+               p.`ProjectDescription`,p.`Budget`, p.`Personnel`,
+               p.`Status`, p.`RequirementDocUrl`,
+               p.`StartDate`,p.`EndDate`,p.`CreateTime`
+        from `Project` p
+        left join `User` u
+        on p.`PMID` = u.`UserID`
+        where p.`ProjectID` = #{projectId}
+    </select>
+
+
+    <!-- 项目下拉框 返回类型 -->
+    <resultMap id="ProjectSelectOptionVOMap" type="com.xgj.outsourcing.pojo.vo.common.SelectOptionVO">
+        <id column="ProjectID" property="value" javaType="java.lang.Integer"/>
+        <result column="ProjectName" property="label" />
+    </resultMap>
+
+    <!-- 获取项目下拉框选项 -->
+    <select id="getProjectSelectOptions" resultMap="ProjectSelectOptionVOMap">
+        select `ProjectID`, `ProjectName`
+        from `Project`
+        <where>
+            <!-- 只选择已立项的项目 -->
+            `Status` in (3,4,5)
+
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                and `PMID` = #{userId}
+            </if>
+
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                and `ProjectID` in (
+                    select `ProjectID`
+                    from `Task`
+                    where `DevID` = #{userId}
+                )
+            </if>
+            <!-- PMO 与 系统管理员 可获取所有已立项的项目列表选项 -->
+
+        </where>
+        order by `ProjectID`
+    </select>
+
+
+</mapper>

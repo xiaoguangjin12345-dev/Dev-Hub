@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.outsourcing.mapper.TaskPerformanceMapper">
+
+    <!-- 待评分绩效列表 返回类型 -->
+    <resultMap id="TaskPerformancePendingVOMap" type="com.xgj.outsourcing.pojo.vo.performance.TaskPerformancePendingVO">
+        <id column="TaskPerfID" property="perfId" />
+        <result column="TaskName" property="taskName" />
+        <result column="DevName" property="devName" />
+        <result column="Quality" property="quality" />
+        <result column="Efficiency" property="efficiency" />
+    </resultMap>
+
+    <!-- 获取待评分任务级绩效列表（分页） -->
+    <select id="getPendingTaskPerformances" resultMap="TaskPerformancePendingVOMap">
+        select
+            tp.`TaskPerfID`, t.`TaskName`,
+            u.`RealName` as `DevName`,
+            tp.`Quality`, tp.`Efficiency`
+        from `Task_Performance` tp
+        left join `Task` t
+        on tp.`TaskID` = t.`TaskID`
+        left join `User` u
+        on tp.`DevID` = u.`UserID`
+
+        <where>
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                <!-- 开发人员不予查看 -->
+                and 1 = 2
+            </if>
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                and tp.`PMID` = #{userId}
+            </if>
+            <!-- 只查询未发布的绩效 -->
+            and tp.`Status` = #{status}
+        </where>
+        order by tp.`TaskPerfID` desc
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 获取待评分任务级绩效总数 -->
+    <select id="countPendingTaskPerformances" resultType="long">
+        select count(1) from `Task_Performance` tp
+
+        <where>
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                <!-- 开发人员不予查看 -->
+                and 1 = 2
+            </if>
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                and tp.`PMID` = #{userId}
+            </if>
+            <!-- 只查询未发布的绩效 -->
+            and tp.`Status` = #{status}
+        </where>
+    </select>
+
+
+    <!-- 已发布绩效列表 返回类型 -->
+    <resultMap id="TaskPerformanceReleasedVOMap" type="com.xgj.outsourcing.pojo.vo.performance.TaskPerformanceReleasedVO">
+        <id column="TaskPerfID" property="perfId" />
+        <result column="TaskName" property="taskName" />
+        <result column="DevName" property="devName" />
+        <result column="PmName" property="pmName" />
+        <result column="Quality" property="quality" />
+        <result column="Efficiency" property="efficiency" />
+        <result column="PMScore" property="pmScore" />
+        <result column="TotalScore" property="totalScore" />
+        <result column="Comment" property="comment" />
+        <result column="EvaluateTime" property="evaluateTime" />
+    </resultMap>
+
+    <!-- 已发布任务级绩效记录 参数化查询条件 -->
+    <sql id="taskPerfReleasedListWhere">
+        <where>
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                tp.`DevID` = #{userId}
+            </if>
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                tp.`PMID` = #{userId}
+            </if>
+
+            <if test="dto.taskName != null and dto.taskName != ''">
+                <!-- 模糊匹配 -->
+                and t.`TaskName` like concat('%', #{dto.taskName}, '%')
+            </if>
+
+            <if test="dto.devName != null and dto.devName != ''">
+                <!-- 模糊匹配 -->
+                and u1.`RealName` like concat('%', #{dto.devName}, '%')
+            </if>
+
+            <if test="dto.pmName != null and dto.pmName != ''">
+                <!-- 模糊匹配 -->
+                and u2.`RealName` like concat('%', #{dto.pmName}, '%')
+            </if>
+
+            <if test="dto.startDate != null">
+                and tp.`EvaluateTime` >= #{dto.startDate}
+            </if>
+
+            <if test="dto.endDate != null">
+                <!-- 用&lt;代替<解决报错问题 -->
+                and tp.`EvaluateTime` &lt;= #{dto.endDate}
+            </if>
+
+            <!-- 只查询已发布的绩效 -->
+            and `Status` = #{status}
+        </where>
+
+    </sql>
+
+    <!-- 获取已发布任务级绩效列表（分页） -->
+    <select id="getReleasedTaskPerformances" resultMap="TaskPerformanceReleasedVOMap">
+        select
+        tp.`TaskPerfID`, t.`TaskName`,
+        u1.`RealName` as `DevName`, u2.`RealName` as `PmName`,
+        tp.`Quality`, tp.`Efficiency`, tp.`PMScore`,
+        tp.`TotalScore`, tp.`Comment`,
+        tp.`EvaluateTime`
+        from `Task_Performance` tp
+        left join `Task` t
+        on tp.`TaskID` = t.`TaskID`
+        left join `User` u1
+        on tp.`DevID` = u1.`UserID`
+        left join `User` u2
+        on tp.`PMID` = u2.`UserID`
+
+        <include refid="taskPerfReleasedListWhere" />
+        order by tp.`EvaluateTime` desc
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 获取已发布任务级绩效总数 -->
+    <select id="countReleasedTaskPerformances" resultType="long">
+        select count(1)
+        from `Task_Performance` tp
+        left join `Task` t
+        on tp.`TaskID` = t.`TaskID`
+        left join `User` u1
+        on tp.`DevID` = u1.`UserID`
+        left join `User` u2
+        on tp.`PMID` = u2.`UserID`
+
+        <include refid="taskPerfReleasedListWhere" />
+    </select>
+
+</mapper>

@@ -1,0 +1,113 @@
+# 应用名称
+spring:
+  application:
+    name: outsourcing-server
+
+  # 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/outsourcing_system?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 123456
+    # 连接池配置
+    hikari:
+      maximum-pool-size: 30        # 最大连接数
+      minimum-idle: 10             # 最小空闲连接数
+      connection-timeout: 30000    # 等待获取连接的最长时间：30秒
+      idle-timeout: 600000         # 空闲连接存活时间：10分钟
+      max-lifetime: 1800000        # 连接最长生命周期：30分钟
+
+  # Redis 配置
+  data:
+    redis:
+      host: 172.20.10.2  # 虚拟机IP
+      port: 6379
+      password: 123456
+      database: 0        # 使用0号库
+
+  # RabbitMQ 配置
+  rabbitmq:
+    host: 172.20.10.2    # 虚拟机IP
+    port: 5672           # 程序连接用5672，后台网页用15672
+    username: xiao
+    password: 123456
+    virtual-host: /      # 默认虚拟主机
+    # 配置消费者有关默认选项
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3           # 最多3次
+          initial-interval: 1000    # 1秒后重试
+          multiplier: 1.0           # 固定间隔，不递增
+        default-requeue-rejected: false    # 全部重试失败后，直接丢弃
+
+  servlet:
+    multipart:
+      enabled: true
+      # 单个文件最大限制
+      max-file-size: 50MB
+      # 单次请求总大小限制
+      max-request-size: 100MB
+
+
+# MyBatis-Plus配置
+mybatis-plus:
+  # 路径对应 src/main/resources/mapper/ 下所有的 .xml 文件
+  mapper-locations: classpath*:mapper/*.xml
+  # 给实体类起别名，这样 XML 里的 resultType 就不必写一长串包名了
+  type-aliases-package: com.xgj.outsourcing.pojo
+
+  configuration:
+    # 打印SQL日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 自动开启驼峰命名转换
+    map-underscore-to-camel-case: true
+
+# 端口
+server:
+  port: 8080
+  # 一级路由设置
+  servlet:
+    context-path: /v2
+
+# JWT配置信息
+jwt:
+  key: "XiaoTongXue_Secret_Key_Must_Be_Long_Enough_123456"
+  issuer: "OutsourcingApi"
+  audience: "OutsourcingClient"
+  expireMinutes: 1440
+
+# 文件上传根路径
+file:
+  upload-root-path: E:/outsourcing_files/uploads
+
+# AI服务配置信息
+ai_service:
+  providers:
+    deepseek:
+      url: "https://api.deepseek.com/v1"
+      api_key: "sk-293c8c1bd1274d5ea913191fb3f9e3c8"
+      models:
+        pro: "deepseek-v4-pro"      # 复杂任务用
+        flash: "deepseek-v4-flash"  # 简单快速用
+        r1: "deepseek-r1-250528"
+        v3: "deepseek-v3"
+
+    qwen:
+      url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
+      api_key: "sk-f262d319195a460eb19b8d7a64d3dd93"
+      models:
+        turbo: "qwen-turbo"
+        plus: "qwen-plus"
+        max: "qwen-max"
+
+    ollama:
+      url: "http://localhost:11434"
+      api_key: ""
+      models:
+        qwen2.5_0.5b: "qwen2.5:0.5b"
+        qwen2.5_1.5b: "qwen2.5:1.5b"
+        deepseek: "deepseek-r1:1.5b"
+
+

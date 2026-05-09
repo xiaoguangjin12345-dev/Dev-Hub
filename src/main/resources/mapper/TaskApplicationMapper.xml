@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.outsourcing.mapper.TaskApplicationMapper">
+
+    <!-- 任务申请列表 返回类型 -->
+    <resultMap id="TaskApplicationListVOMap" type="com.xgj.outsourcing.pojo.vo.taskapplication.TaskApplicationListVO">
+        <id column="ApplicationID" property="applicationId" />
+        <result column="TaskID" property="taskId" />
+        <result column="TaskName" property="taskName" />
+        <result column="PmName" property="pmName" />
+        <result column="DevName" property="devName" />
+        <result column="DevSkills" property="devSkills" />
+        <result column="Type" property="type" />
+        <result column="Status" property="status" />
+        <result column="ApplyTime" property="applyTime" />
+        <result column="DealTime" property="dealTime" />
+    </resultMap>
+
+    <!-- 参数化查询 任务申请记录列表 -->
+    <select id="getTaskApplications">
+        select
+            ta.`ApplicationID`, ta.`TaskID`, t.`TaskName`,
+            u1.`RealName` as `PmName`, u2.`RealName` as `DevName`, dp.`Skills` as `DevSkills`,
+            ta.`Type`, ta.`Status`,
+            ta.`ApplyTime`, ta.`DealTime`
+        from `Task_Application` ta
+        left join `Task` t
+            on ta.`TaskID` = t.`TaskID`
+        left join `User` u1
+            on ta.`PMID` = u1.`UserID`
+        left join `User` u2
+            on ta.`DevID` = u2.`UserID`
+        left join `Dev_Profile` dp
+            on ta.`DevID` = dp.`UserID`
+        <where>
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                ta.`PMID` = #{userId}
+            </if>
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                ta.`DevID` = #{userId}
+            </if>
+            <!-- 数据归属上 PMO与系统管理员可查看全量数据 -->
+
+            <if test="type != null">
+                and ta.`Type` = #{type}
+            </if>
+        </where>
+        order by ta.`ApplyTime` desc
+    </select>
+
+</mapper>

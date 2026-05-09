@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.outsourcing.mapper.TaskMapper">
+
+    <!-- 添加任务记录 -->
+    <insert id="insertTask" useGeneratedKeys="true" keyProperty="TaskID" keyColumn="TaskID">
+        insert into `Task`(
+            `ProjectID`, `TaskName`, `TaskDescription`,
+            `Status`, `Revision`,
+            `EstimatedHours`, `ActualHours`, `CreateTime`
+        ) value (
+            #{dto.ProjectID}, #{dto.TaskName}, #{dto.TaskDescription},
+            #{dto.Status}, #{dto.Revision},
+            #{dto.EstimatedHours}, #{dto.ActualHours}, #{dto.CreateTime}
+        )
+    </insert>
+
+
+    <!-- 任务列表 开发人员专用的待分配任务列表 共用返回类型 -->
+    <resultMap id="TaskListVOMap" type="com.xgj.outsourcing.pojo.vo.task.TaskListVO">
+        <id column="TaskID" property="taskId" />
+        <result column="TaskName" property="taskName" />
+        <result column="ProjectID" property="projectId" />
+        <result column="ProjectName" property="projectName" />
+        <result column="Status" property="status" />
+        <result column="EstimatedHours" property="estimatedHours" />
+        <result column="RequiredSkills" property="requiredSkills" />
+        <result column="PmName" property="pmName" />
+        <result column="DevName" property="devName" />
+    </resultMap>
+
+    <!-- 任务列表 参数化查询条件 -->
+    <sql id="taskListWhere">
+        <where>
+            <if test="dto.taskName != null and dto.taskName != ''">
+                <!-- 模糊匹配 -->
+                and t.`TaskName` like concat('%', #{dto.taskName}, '%')
+            </if>
+
+            <if test="dto.projectName != null and dto.projectName != ''">
+                <!-- 模糊匹配 -->
+                and p.`ProjectName` like concat('%', #{dto.projectName}, '%')
+            </if>
+
+            <if test="dto.pmName != null and dto.pmName != ''">
+                <!-- 模糊匹配 -->
+                and u1.`RealName` like concat('%', #{dto.pmName}, '%')
+            </if>
+
+            <if test="dto.devName != null and dto.devName != ''">
+                <!-- 模糊匹配 -->
+                and u2.`RealName` like concat('%', #{dto.devName}, '%')
+            </if>
+
+            <if test="dto.projectIds != null and dto.projectIds.size() > 0">
+                and t.`ProjectID` in
+                <foreach collection="dto.projectIds" item="projectId" open="(" separator="," close=")">
+                    #{projectId}
+                </foreach>
+            </if>
+
+            <if test="dto.statuses != null and dto.statuses.size() > 0">
+                and t.`Status` in
+                <foreach collection="dto.statuses" item="status" open="(" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+
+            <!-- 技能筛选条件 - 或关系 -->
+            <if test="dto.skills != null and dto.skills.size() > 0">
+                and t.`TaskID` in (
+                select distinct `TargetID`
+                from `Tag_Relation`
+                where `TargetType` = 2
+                and `TagID` in
+                <foreach collection="dto.skills" item="tagId" open="(" separator="," close=")">
+                    #{tagId}
+                </foreach>
+                )
+            </if>
+
+            <!-- 项目经理 数据隔离条件 -->
+            <if test="role == 2">
+                and p.`PMID` = #{userId}
+            </if>
+
+            <!-- 开发人员 数据隔离条件 -->
+            <if test="role == 3">
+                and t.`DevID` = #{userId}
+            </if>
+
+        </where>
+    </sql>
+
+    <!-- 参数化查询 任务列表（分页） -->
+    <select id="getTasksByQuery" resultMap="TaskListVOMap">
+        select
+            t.`TaskID`, t.`TaskName`, t.`ProjectID`, p.`ProjectName`,
+            t.`Status`,
+            <!-- 对开发人员隐藏预估工时（Mapper XML实现） -->
+            case when #{role} = 3 then null else t.`EstimatedHours` end as `EstimatedHours`,
+            t.`RequiredSkills`,
+            u1.`RealName` as `PmName`,
+            u2.`RealName` as `DevName`
+        from `Task` t
+        join `Project` p
+        on t.`ProjectID` = p.`ProjectID`
+        join `User` u1
+        on p.`PMID` = u1.`UserID`
+        left join `User` u2
+        on t.`DevID` = u2.`UserID`
+
+        <include refid="taskListWhere" />
+        order by t.`CreateTime` desc
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 参数化查询 任务总数 -->
+    <select id="countTasksByQuery" resultType="long">
+        select count(1)
+        from `Task` t
+        join `Project` p
+        on t.`ProjectID` = p.`ProjectID`
+        join `User` u1
+        on p.`PMID` = u1.`UserID`
+        left join `User` u2
+        on t.`DevID` = u2.`UserID`
+
+        <include refid="taskListWhere" />
+    </select>
+
+
+    <!-- 开发人员待分配任务列表 参数化查询条件 -->
+    <sql id="taskSquareListWhere">
+        <where>
+            <if test="dto.taskName != null and dto.taskName != ''">
+                <!-- 模糊匹配 -->
+                and t.`TaskName` like concat('%', #{dto.taskName}, '%')
+            </if>
+
+            <if test="dto.projectName != null and dto.projectName != ''">
+                <!-- 模糊匹配 -->
+                and p.`ProjectName` like concat('%', #{dto.projectName}, '%')
+            </if>
+
+            <if test="dto.pmName != null and dto.pmName != ''">
+                <!-- 模糊匹配 -->
+                and u1.`RealName` like concat('%', #{dto.pmName}, '%')
+            </if>
+
+            <!-- 技能筛选条件 - 或关系 -->
+            <if test="dto.skills != null and dto.skills.size() > 0">
+                and t.`TaskID` in (
+                select distinct `TargetID`
+                from `Tag_Relation`
+                where `TargetType` = 2
+                and `TagID` in
+                <foreach collection="dto.skills" item="tagId" open="(" separator="," close=")">
+                    #{tagId}
+                </foreach>
+                )
+            </if>
+
+            <!-- 必须是待分配状态的任务 -->
+            and t.`Status` = #{status}
+        </where>
+    </sql>
+
+    <!-- 参数化查询 开发人员待分配任务列表（分页） -->
+    <select id="getTaskSquareByQuery" resultMap="TaskListVOMap">
+        select
+            t.`TaskID`, t.`TaskName`, t.`ProjectID`, p.`ProjectName`,
+            t.`Status`,
+            <!-- 对开发人员隐藏预估工时（Mapper XML实现） -->
+            null as `EstimatedHours`,
+            t.`RequiredSkills`,
+            u1.`RealName` as `PmName`,
+            null as `DevName`
+        from `Task` t
+        join `Project` p
+        on t.`ProjectID` = p.`ProjectID`
+        join `User` u1
+        on p.`PMID` = u1.`UserID`
+
+        <include refid="taskSquareListWhere" />
+        order by t.`CreateTime` desc
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 参数化查询 开发人员待分配任务总数 -->
+    <select id="countTaskSquareByQuery" resultType="long">
+        select count(1)
+        from `Task` t
+        join `Project` p
+        on t.`ProjectID` = p.`ProjectID`
+        join `User` u1
+        on p.`PMID` = u1.`UserID`
+
+        <include refid="taskSquareListWhere" />
+    </select>
+
+
+    <!-- 任务详情 返回类型 -->
+    <resultMap id="TaskDetailsVOMap" type="com.xgj.outsourcing.pojo.vo.task.TaskDetailsVO">
+        <id column="TaskID" property="taskId" />
+        <result column="TaskName" property="taskName" />
+        <result column="ProjectID" property="projectId" />
+        <result column="ProjectName" property="projectName" />
+        <result column="Status" property="status" />
+        <result column="EstimatedHours" property="estimatedHours" />
+        <result column="RequiredSkills" property="requiredSkills" />
+        <result column="PmName" property="pmName" />
+        <result column="DevName" property="devName" />
+        <result column="TaskDescription" property="taskDescription" />
+        <result column="ActualHours" property="actualHours" />
+        <result column="CreateTime" property="createTime" />
+        <result column="AssignTime" property="assignTime" />
+        <result column="FinishTime" property="finishTime" />
+    </resultMap>
+
+    <!-- 根据任务编号，查询任务详情 -->
+    <select id="getTaskDetails" resultMap="TaskDetailsVOMap">
+        select
+        t.`TaskID`, t.`TaskName`, t.`ProjectID`, p.`ProjectName`,
+        u1.`RealName` as `PmName`, u2.`RealName` as `DevName`,
+        t.`TaskDescription`, t.`RequiredSkills`, t.`Status`,
+        <!-- 对开发人员隐藏预估工时（Mapper XML实现） -->
+        case when #{role} = 3 then null else t.`EstimatedHours` end as `EstimatedHours`,
+        t.`ActualHours`,
+        t.`CreateTime`, t.`AssignTime`, t.`FinishTime`
+        from `Task` t
+        join `Project` p
+        on t.`ProjectID` = p.`ProjectID`
+        join `User` u1
+        on p.`PMID` = u1.`UserID`
+        left join `User` u2
+        on t.`DevID` = u2.`UserID`
+        where t.`TaskID` = #{taskId}
+    </select>
+
+
+    <!-- 任务下拉框 返回类型 -->
+    <resultMap id="TaskSelectOptionVOMap" type="com.xgj.outsourcing.pojo.vo.common.SelectOptionVO">
+        <id column="TaskID" property="value" javaType="java.lang.Integer"/>
+        <result column="TaskName" property="label" />
+    </resultMap>
+
+    <!-- 获取任务下拉框选项 -->
+    <select id="getTaskSelectOptions" resultMap="TaskSelectOptionVOMap">
+        select `TaskID`, `TaskName`
+        from `Task`
+        <where>
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                `DevID` = #{userId}
+                and `Status` = 2
+            </if>
+
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                `ProjectID` in (
+                    select `ProjectID`
+                    from `Project`
+                    where `PMID` = #{userId}
+                )
+            </if>
+            <!-- PMO 与 系统管理员 可获取所有列表选项 -->
+
+        </where>
+        order by `TaskID`
+    </select>
+
+</mapper>

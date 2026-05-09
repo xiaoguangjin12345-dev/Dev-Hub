@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.outsourcing.mapper.StatsViewMapper">
+
+    <!-- 项目大盘 返回类型 -->
+    <resultMap id="ProjectProgressVOMap" type="com.xgj.outsourcing.pojo.vo.stats.ProjectProgressVO">
+        <id column="ProjectID" property="projectId" />
+        <result column="ProjectName" property="projectName" />
+        <result column="ProjectStatus" property="projectStatus" />
+        <result column="TotalTaskCount" property="totalTaskCount" />
+        <result column="CompletedTaskCount" property="completedTaskCount" />
+        <result column="CompletedTaskPercent" property="completedTaskPercent" />
+    </resultMap>
+
+    <!-- 获取项目大盘列表 -->
+    <select id="getProjectProgressList" resultMap="ProjectProgressVOMap">
+        select
+            p.`ProjectID`,
+            p.`ProjectName`,
+            case
+                when p.`Status` = 1 then '待审核'
+                when p.`Status` = 2 then '待修改'
+                when p.`Status` = 3 then '进行中'
+                when p.`Status` = 4 then '待结项'
+                when p.`Status` = 5 then '已归档'
+            end as `ProjectStatus`,
+            count(*) as `TotalTaskCount`,
+            count(case when t.`Status` = 4 then 1 end) as `CompletedTaskCount`,
+            case
+                when count(*) > 0 then
+                    count(case when t.`Status` = 4 then 1 end) / count(*) * 100.0
+                else
+                    0
+            end as `CompletedTaskPercent`
+        from `Project` p
+        left join `Task` t
+        on p.`ProjectID` = t.`ProjectID`
+
+        <where>
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                t.`DevID` = #{userId}
+            </if>
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                p.`PMID` = #{userId}
+            </if>
+
+            <!-- 项目多选下拉框 -->
+            <if test="projectIds != null and projectIds.size() > 0">
+                and p.`ProjectID` in
+                <foreach collection="projectIds" item="projectId" open="(" separator="," close=")">
+                    #{projectId}
+                </foreach>
+            </if>
+
+        </where>
+        group by p.`ProjectID`
+        order by `CompletedTaskPercent` desc
+    </select>
+
+    <!-- 工时偏差分析 返回类型 -->
+    <resultMap id="HoursAnalysisVOMap" type="com.xgj.outsourcing.pojo.vo.stats.HoursAnalysisVO">
+        <id column="Dimension" property="dimension" />
+        <result column="EstimatedHoursSum" property="estimatedHoursSum" />
+        <result column="ActualHoursSum" property="actualHoursSum" />
+        <result column="Variance" property="variance" />
+        <result column="VariancePercent" property="variancePercent" />
+    </resultMap>
+
+    <!-- 数据隔离多处使用的片段 -->
+    <sql id="dataIsolationForHourAnalysis">
+        <!-- 项目经理 数据隔离 -->
+        <if test="role == 2">
+            and p.`PMID` = #{userId}
+        </if>
+        <!-- 开发人员 数据隔离 -->
+        <if test="role == 3">
+            and t.`DevID` = #{userId}
+        </if>
+        <!-- PMO和系统管理员查看全部用户数据 -->
+    </sql>
+
+    <!-- 获取工时偏差分析列表 -->
+    <select id="getHoursAnalysisList" resultMap="HoursAnalysisVOMap">
+        select
+            case
+                when #{dimension} = 'project' then p.`ProjectName`
+                when #{dimension} = 'user' then u.`RealName`
+                when #{dimension} = 'tag' then dt.`TagName`
+                else null
+            end as `Dimension`,
+            sum(t.`EstimatedHours`) as `EstimatedHoursSum`,
+            sum(t.`ActualHours`) as `ActualHoursSum`,
+            sum(t.`ActualHours`) - sum(t.`EstimatedHours`) as `Variance`,
+            case
+                when sum(t.`EstimatedHours`) > 0
+                then (sum(t.`ActualHours`) - sum(t.`EstimatedHours`)) * 100.0 / sum(t.`EstimatedHours`)
+                else 0
+            end as `VariancePercent`
+
+        from `Task` t
+        left join `Project` p
+        on t.`ProjectID` = p.`ProjectID`
+
+        <choose>
+            <when test="dimension == 'project'">
+                <where>
+                    <!-- 数据隔离片段 -->
+                    <include refid="dataIsolationForHourAnalysis" />
+                </where>
+                group by p.`ProjectID`
+            </when>
+
+            <when test="dimension == 'user'">
+                left join `User` u
+                on t.`DevID` = u.`UserID`
+                <where>
+                    u.`Role` = 3
+                    <!-- 数据隔离片段 -->
+                    <include refid="dataIsolationForHourAnalysis" />
+                </where>
+                group by u.`UserID`
+            </when>
+
+            <when test="dimension == 'tag'">
+                left join `Tag_Relation` tr
+                on t.`TaskID` = tr.`TargetID`
+                left join `Dict_Tag` dt
+                on tr.`TagID` = dt.`TagID`
+                <where>
+                    tr.`TargetType` = 2
+                    <!-- 数据隔离片段 -->
+                    <include refid="dataIsolationForHourAnalysis" />
+                </where>
+                group by tr.`TagID`
+            </when>
+            <otherwise>
+                1 = 2
+            </otherwise>
+        </choose>
+        order by `Variance` desc
+    </select>
+
+
+    <!-- 开发人员技能画像 返回类型 -->
+    <resultMap id="DevCapabilityVOMap" type="com.xgj.outsourcing.pojo.vo.stats.DevCapabilityVO">
+        <id column="TagName" property="tagName" />
+        <result column="QualityAverage" property="qualityAverage" />
+        <result column="EfficiencyAverage" property="efficiencyAverage" />
+        <result column="TotalScoreAverage" property="totalScoreAverage" />
+        <result column="TaskCount" property="taskCount" />
+    </resultMap>
+
+    <!-- 获取特定某个开发人员技能画像数据（按照技能标签聚合分析） -->
+    <select id="getDevCapabilityByDevId" resultMap="DevCapabilityVOMap">
+        select
+            dt.`TagName`,
+            avg(perf.`Quality`) as `QualityAverage`,
+            avg(perf.`Efficiency`) as `EfficiencyAverage`,
+            avg(perf.`TotalScore`) as `TotalScoreAverage`,
+            count(*) as `TaskCount`
+        from `Task_Performance` perf
+        left join `Tag_Relation` tr
+            on perf.`TaskID` = tr.`TargetID`
+        left join `Dict_Tag` dt
+            on tr.`TagID` = dt.`TagID`
+        <where>
+            tr.`TargetType` = 2
+            and perf.`Status` = 2
+            and perf.`DevID` = #{devId}
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                and perf.`DevID` = #{currUserId}
+            </if>
+
+            <!-- 在该场景下 项目经理可暂时不考虑数据隔离 -->
+<!--            &lt;!&ndash; 项目经理 数据隔离 &ndash;&gt;-->
+<!--            <if test="role == 2">-->
+<!--                and perf.`PMID` = #{currUserId}-->
+<!--            </if>-->
+
+        </where>
+        group by dt.`TagID`
+        order by `TotalScoreAverage`
+    </select>
+
+
+    <!-- 开发人员效能 返回类型 -->
+    <resultMap id="DevEfficiencyVOMap" type="com.xgj.outsourcing.pojo.vo.stats.DevEfficiencyVO">
+        <id column="DevID" property="devId" />
+        <result column="DevName" property="devName" />
+        <result column="FinishedTasksCount" property="finishedTasksCount" />
+        <result column="TotalScoreAverage" property="totalScoreAverage" />
+        <result column="ActualHoursSum" property="actualHoursSum" />
+    </resultMap>
+
+    <!-- 获取开发人员效能列表 -->
+    <select id="getDevEfficiencyList" resultMap="DevEfficiencyVOMap">
+        select
+            t.`DevID`,
+            u.`DevName`,
+            count(case when t.`Status` = 4 then 1 end) as `FinishedTasksCount`,
+            case
+                when count(case when perf.`Status` = 2 then 1 end) > 0
+                    then sum(case when perf.`Status` = 2 then perf.`TotalScore` else 0 end)
+                             / count(case when perf.`Status` = 2 then 1 end)
+                else
+                    0
+            end as `TotalScoreAverage`,
+            sum(t.`ActualHours`) as `ActualHoursSum`
+        from `Task` t
+        left join `Task_Performance` perf
+            on t.`TaskID` = perf.`TaskID`
+        left join `User` u
+            on t.`DevID` = u.`UserID`
+        <where>
+            t.`Status` != 1
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                and t.`DevID` = #{userId}
+            </if>
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                and t.`DevID` in (
+                    select t2.`DevID`
+                    from `Task` t2
+                    left join `Project` p2
+                    on t2.`ProjectID` = p2.`ProjectID`
+                    where p2.`PMID` = #{userId}
+                    and t2.`Status` != 1
+                )
+            </if>
+
+        </where>
+        group by t.`DevID`
+
+    </select>
+
+
+</mapper>

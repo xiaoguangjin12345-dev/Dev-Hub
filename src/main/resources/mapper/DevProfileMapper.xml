@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xgj.outsourcing.mapper.DevProfileMapper">
+    <!-- 更新开发人员简历 -->
+    <update id="updateDevProfile">
+        update `Dev_Profile`
+        <set>
+            <if test="skills != null and skills != ''">
+                `Skills` = #{skills},
+            </if>
+            `ResumeText` = #{resumeText}
+        </set>
+        where `UserID` = #{userId}
+    </update>
+
+</mapper>

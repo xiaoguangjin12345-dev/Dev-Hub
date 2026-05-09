@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.outsourcing.mapper.TaskChangeLogMapper">
+
+    <!-- 任务预估工时修改记录列表 返回类型 -->
+    <resultMap id="EstimatedHourChangeLogListVOMap" type="com.xgj.outsourcing.pojo.vo.hourlog.EstimatedHourChangeLogListVO">
+        <id column="ChangeID" property="changeId" />
+        <result column="TaskName" property="taskName" />
+        <result column="PmName" property="pmName" />
+        <result column="OldHours" property="oldHours" />
+        <result column="NewHours" property="newHours" />
+        <result column="ChangeReason" property="changeReason" />
+        <result column="ChangeTime" property="changeTime" />
+    </resultMap>
+
+    <!-- 任务预估工时修改记录 参数化查询条件 -->
+    <sql id="estimatedHourChangeLogListWhere">
+        <where>
+            <!-- 开发人员 数据隔离 不予查看 -->
+            <if test="role == 3">
+                1 = 2
+            </if>
+            <!-- 项目经理 数据隔离 只能看自己的项目所属任务的预估工时修改记录 -->
+            <if test="role == 2">
+                p.`PMID` = #{userId}
+            </if>
+            <!-- PMO和系统管理员 可查看所有用户数据 -->
+
+            <if test="dto.taskName != null and dto.taskName != ''">
+                <!-- 模糊匹配 -->
+                and t.`TaskName` like concat('%', #{dto.taskName}, '%')
+            </if>
+
+            <if test="dto.pmName != null and dto.pmName != ''">
+                <!-- 模糊匹配 -->
+                and u.`RealName` like concat('%', #{dto.pmName}, '%')
+            </if>
+
+            <if test="dto.startDate != null">
+                and tcl.`ChangeTime` >= #{dto.startDate}
+            </if>
+
+            <if test="dto.endDate != null">
+                <!-- 用&lt;代替<解决报错问题 -->
+                and tcl.`ChangeTime` &lt;= #{dto.endDate}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 参数化查询 任务预估工时修改记录列表（分页） -->
+    <select id="getTaskChangeLogsByQuery" resultMap="EstimatedHourChangeLogListVOMap">
+        select
+        tcl.`ChangeID`, t.`TaskName`, u.`RealName` as `PmName`,
+        tcl.`OldHours`, tcl.`NewHours`, tcl.`ChangeReason`,
+        tcl.`ChangeTime`
+        from `Task_Change_Log` tcl
+        left join `Task` t
+        on tcl.`TaskID` = t.`TaskID`
+        left join `User` u
+        on tcl.`PMID` = u.`UserID`
+        left join `Project` p
+        on p.`ProjectID` = t.`ProjectID`
+
+        <include refid="estimatedHourChangeLogListWhere" />
+        order by tcl.`ChangeTime` desc
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 参数化查询 任务预估工时修改记录总数 -->
+    <select id="countTaskChangeLogsByQuery" resultType="long">
+        select count(1)
+        from `Task_Change_Log` tcl
+        left join `Task` t
+        on tcl.`TaskID` = t.`TaskID`
+        left join `User` u
+        on tcl.`PMID` = u.`UserID`
+        left join `Project` p
+        on p.`ProjectID` = t.`ProjectID`
+
+        <include refid="estimatedHourChangeLogListWhere" />
+    </select>
+
+</mapper>

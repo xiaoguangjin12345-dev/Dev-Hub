@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.outsourcing.mapper.TaskReviewMapper">
+
+    <!-- 任务评审记录 返回类型 -->
+    <resultMap id="TaskReviewListVOMap" type="com.xgj.outsourcing.pojo.vo.taskreview.TaskReviewListVO">
+        <id column="ReviewID" property="reviewId" />
+        <result column="TaskID" property="taskId" />
+        <result column="TaskName" property="taskName" />
+        <result column="DevName" property="devName" />
+        <result column="PmName" property="pmName" />
+        <result column="GitUrl" property="gitUrl" />
+        <result column="ArchiveUrl" property="archiveFileUrl" />
+        <result column="DocUrl" property="docFileUrl" />
+        <result column="Revision" property="revision" />
+        <result column="Result" property="result" />
+        <result column="Comment" property="comment" />
+        <result column="SubmitTime" property="submitTime" />
+        <result column="ReviewTime" property="reviewTime" />
+    </resultMap>
+
+    <!-- 查询任务评审记录列表（分页） -->
+    <select id="getTaskReviews" resultMap="TaskReviewListVOMap">
+        select
+            tr.`ReviewID`, tr.`TaskID`, t.`TaskName`,
+            u1.`RealName` as `DevName`, u2.`RealName` as `PmName`,
+            tr.`GitUrl`, tr.`ArchiveUrl`, tr.`DocUrl`,
+            tr.`Revision`, tr.`Result`, tr.`Comment`,
+            tr.`SubmitTime`, tr.`ReviewTime`
+        from `Task_Review` tr
+        left join `Task` t
+        on tr.`TaskID` = t.`TaskID`
+        left join `User` u1
+        on tr.`DevID` = u1.`UserID`
+        left join `User` u2
+        on tr.`PMID` = u2.`UserID`
+        <where>
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                and tr.`PMID` = #{userId}
+            </if>
+
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                and tr.`DevID` = #{userId}
+            </if>
+
+            <!-- PMO与系统管理员可查看所有用户数据 -->
+
+        </where>
+        order by tr.`SubmitTime` desc
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 查询任务评审记录总数 -->
+    <select id="countTaskReviews" resultType="long">
+        select count(1) from `Task_Review` tr
+        <where>
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                and tr.`PMID` = #{userId}
+            </if>
+
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                and tr.`DevID` = #{userId}
+            </if>
+
+            <!-- PMO与系统管理员可查看所有用户数据 -->
+
+        </where>
+    </select>
+
+</mapper>
