@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.devpulse.mapper.DictTagMapper">
+
+    <!-- 技能标签下拉框 返回类型 -->
+    <resultMap id="TagSelectOptionVOMap" type="com.xgj.devpulse.pojo.vo.common.SelectOptionVO">
+        <id column="TagID" property="value" javaType="java.lang.Integer"/>
+        <result column="TagName" property="label" />
+    </resultMap>
+
+    <!-- 获取技能标签下拉框选项 -->
+    <select id="getTagSelectOptions" resultMap="TagSelectOptionVOMap">
+        select `TagID`, `TagName`
+        from `Dict_Tag`
+        order by `TagID`
+    </select>
+
+</mapper>

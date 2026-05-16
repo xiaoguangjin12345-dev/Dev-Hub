@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.devpulse.mapper.WorkLogMapper">
+
+    <!-- 实际工时记录列表 返回类型 -->
+    <resultMap id="ActualHourLogListVOMap" type="com.xgj.devpulse.pojo.vo.hourlog.ActualHourLogListVO">
+        <id column="LogID" property="logId" />
+        <result column="TaskID" property="taskId" />
+        <result column="TaskName" property="taskName" />
+        <result column="DevID" property="devId" />
+        <result column="DevName" property="devName" />
+        <result column="WorkDate" property="workDate" />
+        <result column="Hours" property="hours" />
+        <result column="Description" property="description" />
+        <result column="LastTime" property="lastTime" />
+        <result column="Status" property="status" />
+    </resultMap>
+
+    <!-- 实际工时记录列表 参数化查询条件 -->
+    <sql id="actualHourLogListWhere">
+        <where>
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                wl.`UserID` = #{userId}
+                and wl.`Hours` > 0
+            </if>
+
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                p.`PMID` = #{userId}
+            </if>
+
+            <!-- PMO和系统管理员 支持全部用户数据查看 -->
+
+            <if test="dto.taskName != null and dto.taskName != ''">
+                <!-- 模糊匹配 -->
+                and t.`TaskName` like concat('%', #{dto.taskName}, '%')
+            </if>
+
+            <if test="dto.devName != null and dto.devName != ''">
+                <!-- 模糊匹配 -->
+                and u.`RealName` like concat('%', #{dto.devName}, '%')
+            </if>
+
+            <if test="dto.statuses != null and dto.statuses.size() > 0">
+                and wl.`Status` in
+                <foreach collection="dto.statuses" item="status" open="(" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+
+            <if test="dto.startDate != null">
+                and wl.`WorkDate` >= #{dto.startDate}
+            </if>
+
+            <if test="dto.endDate != null">
+                <!-- 用&lt;代替<解决报错问题 -->
+                and wl.`WorkDate` &lt;= #{dto.endDate}
+            </if>
+
+        </where>
+
+    </sql>
+
+    <!-- 参数化查询 实际工时记录列表（分页） -->
+    <select id="getWorkLogsByQuery" resultMap="ActualHourLogListVOMap">
+        select
+            wl.`LogID`, wl.`TaskID`, t.`TaskName`,
+            wl.`UserID` as `DevID`, u.`RealName` as `DevName`,
+            wl.`WorkDate`, wl.`Hours`,
+            wl.`Description`, wl.`LastTime`,
+            wl.`Status`
+        from `Work_Log` wl
+        left join `Task` t
+        on wl.`TaskID` = t.`TaskID`
+        left join `User` u
+        on wl.`UserID` = u.`UserID`
+        left join `Project` p
+        on t.`ProjectID` = p.`ProjectID`
+
+        <include refid="actualHourLogListWhere"/>
+        order by wl.`WorkDate` desc
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 参数化查询 实际工时记录总数 -->
+    <select id="countWorkLogsByQuery" resultType="long">
+        select count(1)
+        from `Work_Log` wl
+        left join `Task` t
+        on wl.`TaskID` = t.`TaskID`
+        left join `User` u
+        on wl.`UserID` = u.`UserID`
+        left join `Project` p
+        on t.`ProjectID` = p.`ProjectID`
+
+        <include refid="actualHourLogListWhere"/>
+    </select>
+
+
+</mapper>

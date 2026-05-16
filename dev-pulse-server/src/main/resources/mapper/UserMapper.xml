@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xgj.devpulse.mapper.UserMapper">
+
+    <!-- 添加用户（注册） -->
+    <insert id="insertUser">
+        insert into `User`(`Username`, `Password`,
+                           `RealName`, `Role`,
+                           `Email`, `Phone`,
+                           `Status`, `CreateTime`)
+        values (#{dto.username}, #{dto.password},
+                #{dto.realName}, #{dto.role},
+                #{dto.email}, #{dto.phone},
+                1, #{createTime})
+
+    </insert>
+
+    <!-- 用户列表 返回类型 -->
+    <resultMap id="UserListVOMap" type="com.xgj.devpulse.pojo.vo.user.UserListVO">
+        <id column="UserID" property="userId" />
+        <result column="Username" property="userName" />
+        <result column="RealName" property="realName" />
+        <result column="Role" property="role" />
+        <result column="Email" property="email" />
+        <result column="Phone" property="phone" />
+        <result column="Skills" property="skills" />
+    </resultMap>
+
+    <!-- 用户列表 参数化查询条件 -->
+    <sql id="userListWhere">
+        <where>
+            <if test="dto.roles != null and dto.roles.size() > 0">
+                and u.`Role` in
+                <foreach collection="dto.roles" item="role" open="(" separator="," close=")">
+                    #{role}
+                </foreach>
+            </if>
+
+            <if test="dto.statuses != null and dto.statuses.size() > 0">
+                and u.`Status` in
+                <foreach collection="dto.statuses" item="status" open="(" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+
+            <if test="dto.realName != null and dto.realName != ''">
+                <!-- 模糊匹配，只匹配前缀 -->
+                and u.`RealName` like concat(#{dto.realName}, '%')
+            </if>
+
+            <!-- 技能筛选条件 - 或关系 -->
+            <if test="dto.skills != null and dto.skills.size() > 0">
+                and u.`UserID` in (
+                    select distinct `TargetID`
+                    from `Tag_Relation`
+                    where `TargetType` = 1
+                    and `TagID` in
+                    <foreach collection="dto.skills" item="tagId" open="(" separator="," close=")">
+                        #{tagId}
+                    </foreach>
+                )
+            </if>
+        </where>
+
+    </sql>
+
+    <!-- 多条件查询用户列表（分页） -->
+    <select id="getUsersByQuery" resultMap="UserListVOMap">
+        select u.`UserID`, u.`Username`, u.`RealName`,
+               u.`Role`, u.`Email`, u.`Phone`,
+               dp.`Skills`
+        from `User` as u
+        left join `Dev_Profile` as dp
+        on u.`UserID` = dp.`UserID`
+
+        <include refid="userListWhere" />
+        order by u.`RealName`
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 多条件查询用户总数 -->
+    <select id="countUsersByQuery" resultType="long">
+        select count(1)
+        from `User` as u
+        left join `Dev_Profile` as dp
+        on u.`UserID` = dp.`UserID`
+
+        <include refid="userListWhere" />
+    </select>
+
+
+    <!-- 用户详情 返回类型 -->
+    <resultMap id="UserDetailsVOMap" type="com.xgj.devpulse.pojo.vo.user.UserDetailsVO">
+        <id column="UserID" property="userId" />
+        <result column="Username" property="userName" />
+        <result column="RealName" property="realName" />
+        <result column="Role" property="role" />
+        <result column="Email" property="email" />
+        <result column="Phone" property="phone" />
+        <result column="Skills" property="skills" />
+        <result column="ResumeText" property="resumeText" />
+        <result column="CreateTime" property="createTime" />
+    </resultMap>
+
+    <!-- 根据用户编号查询详情 -->
+    <select id="getUserById" resultMap="UserDetailsVOMap">
+        select u.`UserID`, u.`Username`, u.`RealName`,
+               u.`Role`, u.`Email`, u.`Phone`,
+               dp.`Skills`, dp.`ResumeText`, u.`CreateTime`
+        from `User` as u
+        left join `Dev_Profile` as dp
+        on u.`UserID` = dp.`UserID`
+        where u.`UserID`= #{userId}
+    </select>
+
+
+    <!-- 项目经理下拉框 返回类型 -->
+    <resultMap id="PMSelectOptionVOMap" type="com.xgj.devpulse.pojo.vo.common.SelectOptionVO">
+        <id column="UserID" property="value" javaType="java.lang.Integer"/>
+        <result column="RealName" property="label" />
+    </resultMap>
+
+    <!-- 获取项目经理下拉框选项 -->
+    <select id="getPMSelectOptions" resultMap="PMSelectOptionVOMap">
+        select `UserID`, `RealName`
+        from `User`
+        <where>
+            `Role` = 2 and `Status` = 2
+            <!-- 项目经理只能查自己 -->
+            <if test="role == 2">
+                and `UserID` = #{userId}
+            </if>
+        </where>
+        order by `UserID`
+    </select>
+
+
+    <!-- 开发人员下拉框 返回类型 -->
+    <resultMap id="DevSelectOptionVOMap" type="com.xgj.devpulse.pojo.vo.common.SelectOptionVO">
+        <id column="UserID" property="value" javaType="java.lang.Integer"/>
+        <result column="RealName" property="label" />
+    </resultMap>
+
+    <!-- 获取开发人员下拉框选项 -->
+    <select id="getDevSelectOptions" resultMap="DevSelectOptionVOMap">
+        select `UserID`, `RealName`
+        from `User`
+        <where>
+            `Role` = 3 and `Status` = 2
+            <!-- 开发人员只能查自己 -->
+            <if test="role == 3">
+                and `UserID` = #{userId}
+            </if>
+        </where>
+        order by `UserID`
+    </select>
+
+</mapper>

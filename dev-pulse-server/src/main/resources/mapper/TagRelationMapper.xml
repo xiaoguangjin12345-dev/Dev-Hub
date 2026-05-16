@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.devpulse.mapper.TagRelationMapper">
+
+    <insert id="insertTagRelation">
+        insert into `Tag_Relation`(`TagID`, `TargetType`, `TargetID`)
+        values
+        <foreach collection="skills" item="tagId" separator=",">
+            (#{tagId}, #{targetType}, #{targetId})
+        </foreach>
+    </insert>
+
+</mapper>

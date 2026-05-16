@@ -1,0 +1,3728 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/v2",
+      "description": "Generated server url"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/users/{id}/audit": {
+      "put": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "auditUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoticeApproveDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/profile": {
+      "put": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "updateProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserProfileUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/performances/{id}": {
+      "put": {
+        "tags": [
+          "task-performance-controller"
+        ],
+        "operationId": "submitSubjectiveScore",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PerformanceSubjectiveScoreDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/applications/{appId}": {
+      "put": {
+        "tags": [
+          "task-application-controller"
+        ],
+        "operationId": "acceptApplication",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reviews/{id}": {
+      "put": {
+        "tags": [
+          "task-review-controller"
+        ],
+        "operationId": "executeReview",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoticeApproveDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "tags": [
+          "project-controller"
+        ],
+        "operationId": "getProjectById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseProjectDetailsVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "project-controller"
+        ],
+        "operationId": "updateProject",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/closure": {
+      "put": {
+        "tags": [
+          "project-controller"
+        ],
+        "operationId": "applyClosure",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectClosureRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/performances/{id}": {
+      "put": {
+        "tags": [
+          "project-performance-controller"
+        ],
+        "operationId": "submitSubjectiveScore_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PerformanceSubjectiveScoreDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notices/{id}/delete": {
+      "put": {
+        "tags": [
+          "notice-controller"
+        ],
+        "operationId": "logicalDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hour-logs/estimated/{taskId}": {
+      "put": {
+        "tags": [
+          "hour-log-controller"
+        ],
+        "operationId": "updateEstimatedHours",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EstimatedHourUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hour-logs/actual/{id}": {
+      "put": {
+        "tags": [
+          "hour-log-controller"
+        ],
+        "operationId": "updateActualLog",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualHourLogUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hour-logs/actual/{id}/delete": {
+      "put": {
+        "tags": [
+          "hour-log-controller"
+        ],
+        "operationId": "deleteActualLog",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{taskId}/applications": {
+      "post": {
+        "tags": [
+          "task-application-controller"
+        ],
+        "operationId": "createApplication",
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskInviteDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/": {
+      "get": {
+        "tags": [
+          "task-controller"
+        ],
+        "operationId": "getTasks",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TaskQueryDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVOTaskListVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "task-controller"
+        ],
+        "operationId": "createTask",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskUpdateDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sdk/ai/redis": {
+      "post": {
+        "tags": [
+          "sdk-for-ai-controller"
+        ],
+        "operationId": "setRedis",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AIRedisDTOObject"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reviews/": {
+      "get": {
+        "tags": [
+          "task-review-controller"
+        ],
+        "operationId": "getReviews",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVOTaskReviewListVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "task-review-controller"
+        ],
+        "operationId": "submitDeliverable",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskDeliverableDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/archive": {
+      "post": {
+        "tags": [
+          "project-controller"
+        ],
+        "operationId": "approveClosure",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoticeApproveDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/approve": {
+      "post": {
+        "tags": [
+          "project-controller"
+        ],
+        "operationId": "approveCreate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NoticeApproveDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/": {
+      "get": {
+        "tags": [
+          "project-controller"
+        ],
+        "operationId": "getProjects",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectQueryDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVOProjectListVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "project-controller"
+        ],
+        "operationId": "createProject",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hour-logs/actual": {
+      "get": {
+        "tags": [
+          "hour-log-controller"
+        ],
+        "operationId": "getActualLogs",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ActualHourLogQueryDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVOActualHourLogListVO"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "hour-log-controller"
+        ],
+        "operationId": "createActualLog",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualHourLogSubmitDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "register",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequestDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseLoginResponseVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "getUserDetails",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseUserDetailsVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "getUsers",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/UserQueryDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVOUserListVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "get": {
+        "tags": [
+          "task-controller"
+        ],
+        "operationId": "getTaskById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseTaskDetailsVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/square": {
+      "get": {
+        "tags": [
+          "task-controller"
+        ],
+        "operationId": "getTasksForApplication",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TaskQueryDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVOTaskListVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/performances/pending": {
+      "get": {
+        "tags": [
+          "task-performance-controller"
+        ],
+        "operationId": "getPendingPerformances",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVOTaskPerformancePendingVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/performances/": {
+      "get": {
+        "tags": [
+          "task-performance-controller"
+        ],
+        "operationId": "getReleasedPerformances",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/TaskPerformanceQueryDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVOTaskPerformanceReleasedVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/applications": {
+      "get": {
+        "tags": [
+          "task-application-controller"
+        ],
+        "operationId": "getApplications",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseListTaskApplicationListVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stats/project-progress": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "projectProgress",
+        "parameters": [
+          {
+            "name": "projectIds",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stats/project-progress/result": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "getProjectProgressResult",
+        "parameters": [
+          {
+            "name": "redisKey",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseStatsResultVOProjectProgressVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stats/project-progress/excel": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "getProjectProgressExport",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/stats/hour-analysis": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "hoursAnalysis",
+        "parameters": [
+          {
+            "name": "dimension",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stats/hour-analysis/result": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "getHoursAnalysisResult",
+        "parameters": [
+          {
+            "name": "redisKey",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseStatsResultVOHoursAnalysisVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stats/hour-analysis/excel": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "hoursAnalysis_1",
+        "parameters": [
+          {
+            "name": "dimension",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/stats/dev-efficiency": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "devEfficiency",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stats/dev-efficiency/result": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "getDevEfficiencyResult",
+        "parameters": [
+          {
+            "name": "redisKey",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseStatsResultVODevEfficiencyVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stats/dev-efficiency/excel": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "devEfficiency_1",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/stats/dev-capability/{devId}": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "devCapability",
+        "parameters": [
+          {
+            "name": "devId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stats/dev-capability/{devId}/excel": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "devCapability_1",
+        "parameters": [
+          {
+            "name": "devId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/stats/dev-capability/result": {
+      "get": {
+        "tags": [
+          "stats-controller"
+        ],
+        "operationId": "getDevCapabilityResult",
+        "parameters": [
+          {
+            "name": "redisKey",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseStatsResultVODevCapabilityVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/performances/pending": {
+      "get": {
+        "tags": [
+          "project-performance-controller"
+        ],
+        "operationId": "getPendingPerformances_1",
+        "parameters": [
+          {
+            "name": "pageNum",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVOProjectPerformancePendingVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/performances/": {
+      "get": {
+        "tags": [
+          "project-performance-controller"
+        ],
+        "operationId": "getReleasedPerformances_1",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ProjectPerformanceQueryDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVOProjectPerformanceReleasedVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notices/{id}": {
+      "get": {
+        "tags": [
+          "notice-controller"
+        ],
+        "operationId": "getDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseNoticeVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notices/unread-count": {
+      "get": {
+        "tags": [
+          "notice-controller"
+        ],
+        "operationId": "getUnreadCount",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseInteger"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/notices/": {
+      "get": {
+        "tags": [
+          "notice-controller"
+        ],
+        "operationId": "getNotices",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/NoticeQueryDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVONoticeVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hour-logs/estimated": {
+      "get": {
+        "tags": [
+          "hour-log-controller"
+        ],
+        "operationId": "getEstimatedHourChangeLogs",
+        "parameters": [
+          {
+            "name": "dto",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/EstimatedHourChangeLogQueryDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponsePageResultVOEstimatedHourChangeLogListVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hour-logs/actual/check": {
+      "get": {
+        "tags": [
+          "hour-log-controller"
+        ],
+        "operationId": "checkCreateActualLog",
+        "parameters": [
+          {
+            "name": "redisKey",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseBoolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/file/download": {
+      "get": {
+        "tags": [
+          "file-controller"
+        ],
+        "operationId": "download",
+        "parameters": [
+          {
+            "name": "relativePath",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/common/{type}/options": {
+      "get": {
+        "tags": [
+          "select-option-controller"
+        ],
+        "operationId": "getSelectOptions",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseListSelectOptionVOInteger"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/task-assign/{projectId}": {
+      "get": {
+        "tags": [
+          "ai-application-controller"
+        ],
+        "operationId": "aiTaskAssignRequest",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "prompt",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/ai/task-assign/result": {
+      "get": {
+        "tags": [
+          "ai-application-controller"
+        ],
+        "operationId": "getAITaskAssignResult",
+        "parameters": [
+          {
+            "name": "redisKey",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseTaskAssignListResultVO"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "NoticeApproveDTO": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "APIResponseBoolean": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UserProfileUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "resumeText": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          }
+        }
+      },
+      "PerformanceSubjectiveScoreDTO": {
+        "type": "object",
+        "properties": {
+          "score": {
+            "type": "number"
+          },
+          "comment": {
+            "type": "string"
+          }
+        }
+      },
+      "ProjectUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "projectName": {
+            "type": "string"
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "clientEmail": {
+            "type": "string"
+          },
+          "clientPhone": {
+            "type": "string"
+          },
+          "projectDescription": {
+            "type": "string"
+          },
+          "budget": {
+            "type": "number"
+          },
+          "personnel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requirementFile": {
+            "type": "string",
+            "format": "binary"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "ProjectClosureRequestDTO": {
+        "type": "object",
+        "properties": {
+          "finalReportFile": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      },
+      "EstimatedHourUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "newHours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "updateReason": {
+            "type": "string"
+          }
+        }
+      },
+      "ActualHourLogUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "hours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "TaskInviteDTO": {
+        "type": "object",
+        "properties": {
+          "devId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "TaskUpdateDTO": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "taskDescription": {
+            "type": "string"
+          },
+          "requiredSkills": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "estimatedHours": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "AIRedisDTOObject": {
+        "type": "object",
+        "properties": {
+          "redisKey": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "data": {
+            "type": "object"
+          }
+        }
+      },
+      "TaskDeliverableDTO": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "gitUrl": {
+            "type": "string"
+          },
+          "archiveFile": {
+            "type": "string",
+            "format": "binary"
+          },
+          "docFile": {
+            "type": "string",
+            "format": "binary"
+          }
+        }
+      },
+      "ActualHourLogSubmitDTO": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "workDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "APIResponseString": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "string"
+          }
+        }
+      },
+      "RegisterRequestDTO": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "passwordConfirm": {
+            "type": "string"
+          },
+          "realName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "format": "byte"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginRequestDTO": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "APIResponseLoginResponseVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/LoginResponseVO"
+          }
+        }
+      },
+      "LoginResponseVO": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "format": "byte"
+          },
+          "realName": {
+            "type": "string"
+          }
+        }
+      },
+      "APIResponseUserDetailsVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserDetailsVO"
+          }
+        }
+      },
+      "UserDetailsVO": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "realName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "format": "byte"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "string"
+          },
+          "resumeText": {
+            "type": "string"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UserQueryDTO": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "realName": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "APIResponsePageResultVOUserListVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultVOUserListVO"
+          }
+        }
+      },
+      "PageResultVOUserListVO": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserListVO"
+            }
+          }
+        }
+      },
+      "UserListVO": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "realName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "format": "byte"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "skills": {
+            "type": "string"
+          }
+        }
+      },
+      "APIResponseTaskDetailsVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TaskDetailsVO"
+          }
+        }
+      },
+      "TaskDetailsVO": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "estimatedHours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requiredSkills": {
+            "type": "string"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "devName": {
+            "type": "string"
+          },
+          "taskDescription": {
+            "type": "string"
+          },
+          "actualHours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "assignTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "finishTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TaskQueryDTO": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "devName": {
+            "type": "string"
+          },
+          "projectIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "skills": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "APIResponsePageResultVOTaskListVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultVOTaskListVO"
+          }
+        }
+      },
+      "PageResultVOTaskListVO": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskListVO"
+            }
+          }
+        }
+      },
+      "TaskListVO": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "estimatedHours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requiredSkills": {
+            "type": "string"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "devName": {
+            "type": "string"
+          }
+        }
+      },
+      "APIResponsePageResultVOTaskPerformancePendingVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultVOTaskPerformancePendingVO"
+          }
+        }
+      },
+      "PageResultVOTaskPerformancePendingVO": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskPerformancePendingVO"
+            }
+          }
+        }
+      },
+      "TaskPerformancePendingVO": {
+        "type": "object",
+        "properties": {
+          "perfId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "devName": {
+            "type": "string"
+          },
+          "quality": {
+            "type": "number"
+          },
+          "efficiency": {
+            "type": "number"
+          }
+        }
+      },
+      "TaskPerformanceQueryDTO": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "devName": {
+            "type": "string"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "APIResponsePageResultVOTaskPerformanceReleasedVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultVOTaskPerformanceReleasedVO"
+          }
+        }
+      },
+      "PageResultVOTaskPerformanceReleasedVO": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskPerformanceReleasedVO"
+            }
+          }
+        }
+      },
+      "TaskPerformanceReleasedVO": {
+        "type": "object",
+        "properties": {
+          "perfId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "devName": {
+            "type": "string"
+          },
+          "quality": {
+            "type": "number"
+          },
+          "efficiency": {
+            "type": "number"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "pmScore": {
+            "type": "number"
+          },
+          "totalScore": {
+            "type": "number"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "evaluateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "APIResponseListTaskApplicationListVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskApplicationListVO"
+            }
+          }
+        }
+      },
+      "TaskApplicationListVO": {
+        "type": "object",
+        "properties": {
+          "applicationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "devName": {
+            "type": "string"
+          },
+          "devSkills": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "format": "byte"
+          },
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "applyTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dealTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "APIResponseStatsResultVOProjectProgressVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/StatsResultVOProjectProgressVO"
+          }
+        }
+      },
+      "ProjectProgressVO": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "projectStatus": {
+            "type": "string"
+          },
+          "totalTaskCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedTaskCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedTaskPercent": {
+            "type": "number"
+          }
+        }
+      },
+      "StatsResultVOProjectProgressVO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "exportTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectProgressVO"
+            }
+          },
+          "targetDevId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "APIResponseStatsResultVOHoursAnalysisVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/StatsResultVOHoursAnalysisVO"
+          }
+        }
+      },
+      "HoursAnalysisVO": {
+        "type": "object",
+        "properties": {
+          "dimension": {
+            "type": "string"
+          },
+          "estimatedHoursSum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "actualHoursSum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "variance": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "variancePercent": {
+            "type": "number"
+          }
+        }
+      },
+      "StatsResultVOHoursAnalysisVO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "exportTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HoursAnalysisVO"
+            }
+          },
+          "targetDevId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "APIResponseStatsResultVODevEfficiencyVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/StatsResultVODevEfficiencyVO"
+          }
+        }
+      },
+      "DevEfficiencyVO": {
+        "type": "object",
+        "properties": {
+          "devId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "devName": {
+            "type": "string"
+          },
+          "finishedTasksCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalScoreAverage": {
+            "type": "number"
+          },
+          "actualHoursSum": {
+            "type": "number"
+          }
+        }
+      },
+      "StatsResultVODevEfficiencyVO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "exportTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DevEfficiencyVO"
+            }
+          },
+          "targetDevId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "APIResponseStatsResultVODevCapabilityVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/StatsResultVODevCapabilityVO"
+          }
+        }
+      },
+      "DevCapabilityVO": {
+        "type": "object",
+        "properties": {
+          "tagName": {
+            "type": "string"
+          },
+          "qualityAverage": {
+            "type": "number"
+          },
+          "efficiencyAverage": {
+            "type": "number"
+          },
+          "totalScoreAverage": {
+            "type": "number"
+          },
+          "taskCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "StatsResultVODevCapabilityVO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "exportTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DevCapabilityVO"
+            }
+          },
+          "targetDevId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "APIResponsePageResultVOTaskReviewListVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultVOTaskReviewListVO"
+          }
+        }
+      },
+      "PageResultVOTaskReviewListVO": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskReviewListVO"
+            }
+          }
+        }
+      },
+      "TaskReviewListVO": {
+        "type": "object",
+        "properties": {
+          "reviewId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "devName": {
+            "type": "string"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "gitUrl": {
+            "type": "string"
+          },
+          "archiveFileUrl": {
+            "type": "string"
+          },
+          "docFileUrl": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "result": {
+            "type": "string",
+            "format": "byte"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "submitTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reviewTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "APIResponseProjectDetailsVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ProjectDetailsVO"
+          }
+        }
+      },
+      "ProjectDetailsVO": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "projectDescription": {
+            "type": "string"
+          },
+          "budget": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "clientEmail": {
+            "type": "string"
+          },
+          "clientPhone": {
+            "type": "string"
+          },
+          "personnel": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requirementDocUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "APIResponsePageResultVOProjectPerformancePendingVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultVOProjectPerformancePendingVO"
+          }
+        }
+      },
+      "PageResultVOProjectPerformancePendingVO": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectPerformancePendingVO"
+            }
+          }
+        }
+      },
+      "ProjectPerformancePendingVO": {
+        "type": "object",
+        "properties": {
+          "perfId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "resource": {
+            "type": "number"
+          },
+          "modify": {
+            "type": "number"
+          }
+        }
+      },
+      "ProjectPerformanceQueryDTO": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "pmoName": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "APIResponsePageResultVOProjectPerformanceReleasedVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultVOProjectPerformanceReleasedVO"
+          }
+        }
+      },
+      "PageResultVOProjectPerformanceReleasedVO": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectPerformanceReleasedVO"
+            }
+          }
+        }
+      },
+      "ProjectPerformanceReleasedVO": {
+        "type": "object",
+        "properties": {
+          "perfId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "resource": {
+            "type": "number"
+          },
+          "modify": {
+            "type": "number"
+          },
+          "pmoName": {
+            "type": "string"
+          },
+          "pmoScore": {
+            "type": "number"
+          },
+          "totalScore": {
+            "type": "number"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "evaluateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ProjectQueryDTO": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "pmIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        }
+      },
+      "APIResponsePageResultVOProjectListVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultVOProjectListVO"
+          }
+        }
+      },
+      "PageResultVOProjectListVO": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectListVO"
+            }
+          }
+        }
+      },
+      "ProjectListVO": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "projectDescription": {
+            "type": "string"
+          },
+          "budget": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "APIResponseNoticeVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/NoticeVO"
+          }
+        }
+      },
+      "NoticeVO": {
+        "type": "object",
+        "properties": {
+          "noticeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "senderName": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "noticeType": {
+            "type": "string",
+            "format": "byte"
+          },
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "APIResponseInteger": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "NoticeQueryDTO": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "noticeTypes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "senderName": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "APIResponsePageResultVONoticeVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultVONoticeVO"
+          }
+        }
+      },
+      "PageResultVONoticeVO": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NoticeVO"
+            }
+          }
+        }
+      },
+      "EstimatedHourChangeLogQueryDTO": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "APIResponsePageResultVOEstimatedHourChangeLogListVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultVOEstimatedHourChangeLogListVO"
+          }
+        }
+      },
+      "EstimatedHourChangeLogListVO": {
+        "type": "object",
+        "properties": {
+          "changeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "pmName": {
+            "type": "string"
+          },
+          "oldHours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "newHours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "changeReason": {
+            "type": "string"
+          },
+          "changeTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PageResultVOEstimatedHourChangeLogListVO": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EstimatedHourChangeLogListVO"
+            }
+          }
+        }
+      },
+      "ActualHourLogQueryDTO": {
+        "type": "object",
+        "properties": {
+          "pageNum": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "devName": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "statuses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "taskId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "devId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "APIResponsePageResultVOActualHourLogListVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/PageResultVOActualHourLogListVO"
+          }
+        }
+      },
+      "ActualHourLogListVO": {
+        "type": "object",
+        "properties": {
+          "logId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "taskName": {
+            "type": "string"
+          },
+          "devId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "devName": {
+            "type": "string"
+          },
+          "workDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "hours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "lastTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "format": "byte"
+          }
+        }
+      },
+      "PageResultVOActualHourLogListVO": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActualHourLogListVO"
+            }
+          }
+        }
+      },
+      "APIResponseListSelectOptionVOInteger": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SelectOptionVOInteger"
+            }
+          }
+        }
+      },
+      "SelectOptionVOInteger": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      },
+      "APIResponseTaskAssignListResultVO": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "msg": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/TaskAssignListResultVO"
+          }
+        }
+      },
+      "TaskAssignListResultVO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "format": "byte"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskAssignVO"
+            }
+          },
+          "resultTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TaskAssignVO": {
+        "type": "object",
+        "properties": {
+          "taskName": {
+            "type": "string"
+          },
+          "taskDescription": {
+            "type": "string"
+          },
+          "estimatedHours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "skillAnalysis": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "name": "bearerAuth",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

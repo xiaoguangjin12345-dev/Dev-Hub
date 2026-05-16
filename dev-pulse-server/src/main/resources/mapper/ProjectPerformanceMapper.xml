@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.devpulse.mapper.ProjectPerformanceMapper">
+
+    <!-- 待评分绩效列表 返回类型 -->
+    <resultMap id="ProjectPerformancePendingVOMap" type="com.xgj.devpulse.pojo.vo.performance.ProjectPerformancePendingVO">
+        <id column="ProjectPerfID" property="perfId" />
+        <result column="ProjectName" property="projectName" />
+        <result column="PmName" property="pmName" />
+        <result column="Resource" property="resource" />
+        <result column="Modify" property="modify" />
+    </resultMap>
+
+    <!-- 获取待评分项目级绩效列表 -->
+    <select id="getPendingProjectPerformances" resultMap="ProjectPerformancePendingVOMap">
+        select
+            perf.`ProjectPerfID`, p.`ProjectName`,
+            u.`RealName` as `PmName`,
+            perf.`Resource`, perf.`Modify`
+        from `Project_Performance` perf
+        left join `Project` p
+        on perf.`ProjectID` = p.`ProjectID`
+        left join `User` u
+        on perf.`PMID` = u.`UserID`
+
+        <where>
+            <if test="role == 2 or role == 3">
+                <!-- 开发人员与项目经理 不予查看 -->
+                and 1 = 2
+            </if>
+            <!-- 只查询未发布的绩效 -->
+            and perf.`Status` = #{status}
+        </where>
+        order by perf.`ProjectPerfID` desc
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 获取待评分项目级绩效列表 -->
+    <select id="countPendingProjectPerformances" resultType="long">
+        select count(1) from `Project_Performance` perf
+
+        <where>
+            <if test="role == 2 or role == 3">
+                <!-- 开发人员与项目经理 不予查看 -->
+                and 1 = 2
+            </if>
+            <!-- 只查询未发布的绩效 -->
+            and perf.`Status` = #{status}
+        </where>
+    </select>
+
+
+    <!-- 已发布绩效列表 返回类型 -->
+    <resultMap id="ProjectPerformanceReleasedVOMap" type="com.xgj.devpulse.pojo.vo.performance.ProjectPerformanceReleasedVO">
+        <id column="ProjectPerfID" property="perfId" />
+        <result column="ProjectName" property="projectName" />
+        <result column="PmName" property="pmName" />
+        <result column="PmoName" property="pmoName" />
+        <result column="Resource" property="resource" />
+        <result column="Modify" property="modify" />
+        <result column="PMOScore" property="pmoScore" />
+        <result column="TotalScore" property="totalScore" />
+        <result column="Comment" property="comment" />
+        <result column="EvaluateTime" property="evaluateTime" />
+    </resultMap>
+
+    <!-- 已发布项目级绩效记录 参数化查询条件 -->
+    <sql id="projectPerfReleasedListWhere">
+        <where>
+            <!-- 开发人员 数据隔离 -->
+            <if test="role == 3">
+                <!-- 开发人员 不予查看 -->
+                1 = 2
+            </if>
+            <!-- 项目经理 数据隔离 -->
+            <if test="role == 2">
+                perf.`PMID` = #{userId}
+            </if>
+
+            <if test="dto.projectName != null and dto.projectName != ''">
+                <!-- 模糊匹配 -->
+                and p.`ProjectName` like concat('%', #{dto.projectName}, '%')
+            </if>
+
+            <if test="dto.pmName != null and dto.pmName != ''">
+                <!-- 模糊匹配 -->
+                and u1.`RealName` like concat('%', #{dto.pmName}, '%')
+            </if>
+
+            <if test="dto.pmoName != null and dto.pmoName != ''">
+                <!-- 模糊匹配 -->
+                and u2.`RealName` like concat('%', #{dto.pmoName}, '%')
+            </if>
+
+            <if test="dto.startDate != null">
+                and perf.`EvaluateTime` >= #{dto.startDate}
+            </if>
+
+            <if test="dto.endDate != null">
+                <!-- 用&lt;代替<解决报错问题 -->
+                and perf.`EvaluateTime` &lt;= #{dto.endDate}
+            </if>
+
+            <!-- 只查询已发布的绩效 -->
+            and perf.`Status` = #{status}
+        </where>
+    </sql>
+
+    <!-- 获取已发布项目级绩效列表（分页） -->
+    <select id="getReleasedProjectPerformances" resultMap="ProjectPerformanceReleasedVOMap">
+        select
+            perf.`ProjectPerfID`, p.`ProjectName`,
+            u1.`RealName` as `PmName`, u2.`RealName` as `PmoName`,
+            perf.`Resource`, perf.`Modify`, perf.`PMOScore`,
+            perf.`TotalScore`, perf.`Comment`,
+            perf.`EvaluateTime`
+        from `Project_Performance` perf
+        left join `Project` p
+        on perf.`ProjectID` = p.`ProjectID`
+        left join `User` u1
+        on perf.`PMID` = u1.`UserID`
+        left join `User` u2
+        on perf.`PMOID` = u2.`UserID`
+
+        <include refid="projectPerfReleasedListWhere" />
+        order by perf.`EvaluateTime` desc
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 获取已发布项目级绩效总数 -->
+    <select id="countReleasedProjectPerformances" resultType="long">
+        select count(1)
+        from `Project_Performance` perf
+        left join `Project` p
+        on perf.`ProjectID` = p.`ProjectID`
+        left join `User` u1
+        on perf.`PMID` = u1.`UserID`
+        left join `User` u2
+        on perf.`PMOID` = u2.`UserID`
+
+        <include refid="projectPerfReleasedListWhere" />
+    </select>
+
+
+    <!-- 项目级绩效总预估、实际工时数据 返回类型 -->
+    <resultMap id="SumHoursInfoDTOMap" type="com.xgj.devpulse.pojo.dto.performance.SumHoursInfoDTO">
+        <result column="SumEstimatedHours" property="sumEstimatedHours" />
+        <result column="SumActualHours" property="sumActualHours" />
+    </resultMap>
+
+    <!-- 根据项目编号，计算项目级绩效的总预估、实际工时数据 -->
+    <select id="getSumHoursInfo" resultMap="SumHoursInfoDTOMap">
+        select
+            sum(`EstimatedHours`) as `SumEstimatedHours`,
+            sum(`ActualHours`) as `SumActualHours`
+        from `Task`
+        where `ProjectID` = #{projectId}
+    </select>
+
+</mapper>

@@ -1,0 +1,77 @@
+spring:
+  application:
+    name: dev-pulse-server
+
+  # 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dev_pulse&useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: YOUR_PASSWORD
+    # 连接池配置
+    hikari:
+      maximum-pool-size: 30                # 最大连接数
+      minimum-idle: 10                     # 最小空闲连接数
+      connection-timeout: 30000            # 等待获取连接的最长时间：30秒
+      idle-timeout: 600000                 # 空闲连接存活时间：10分钟
+      max-lifetime: 1800000                # 连接最长生命周期：30分钟
+
+  # Redis 配置
+  data:
+    redis:
+      host: YOUR_REDIS_IP_ADDRESS          # Redis服务所在的主机IP
+      port: 6379
+      password: YOUR_PASSWORD
+      database: 0                          # 使用0号库
+
+  # RabbitMQ 配置
+  rabbitmq:
+    host: YOUR_RABBIT_IP_ADDRESS           # Rabbit服务所在的主机IP
+    port: 5672                             # 程序连接用5672，后台网页用15672
+    username: YOUR_USERNAME
+    password: YOUR_PASSWORD
+    virtual-host: /                        # 默认虚拟主机
+    listener:                              # 设置消费者默认配置(注意，是默认配置；若对指定队列设置容器工厂，则以下配置对该队列失效)
+      simple:
+        retry:
+          enabled: true
+          max-attempts: 3                   # 最多3次
+          initial-interval: 1000            # 1秒后重试
+          multiplier: 1.0                   # 固定间隔，不递增
+        default-requeue-rejected: false     # 全部重试失败后，直接丢弃
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB                   # 单个文件最大限制
+      max-request-size: 100MB               # 单次请求总大小限制
+
+
+# MyBatis-Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:mapper/*.xml                   # 路径对应 src/main/resources/mapper/ 下所有的 .xml 文件
+  type-aliases-package: com.xgj.devpulse.pojo              # 给实体类起别名
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl     # 打印SQL日志
+    map-underscore-to-camel-case: true                        # 自动开启驼峰命名转换
+
+# 端口
+server:
+  port: 8080
+  servlet:
+    context-path: /v2                         # 一级路由设置
+
+# JWT配置信息
+jwt:
+  key: YOUR_JWY_KEY                           # 自行设置JWY的key
+  issuer: "DevPulseApiApi"
+  audience: "DevPulseApiClient"
+  expireMinutes: 1440
+
+# 文件上传根路径
+file:
+  upload-root-path: YOUR_ROOT_PATH            # 自行设置
+
+
+
+

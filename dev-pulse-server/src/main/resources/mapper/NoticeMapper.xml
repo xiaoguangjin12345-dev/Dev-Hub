@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xgj.devpulse.mapper.NoticeMapper">
+
+    <!-- 消息通知列表 与 特定消息通知 共用返回类型 -->
+    <resultMap id="NoticeVOMap" type="com.xgj.devpulse.pojo.vo.notice.NoticeVO">
+        <id column="NoticeID" property="noticeId" />
+        <result column="SenderName" property="senderName" />
+        <result column="Title" property="title" />
+        <result column="Content" property="content" />
+        <result column="NoticeType" property="noticeType" />
+        <result column="Status" property="status" />
+        <result column="CreateTime" property="createTime" />
+    </resultMap>
+
+    <!-- 消息通知 参数化查询条件 -->
+    <sql id="noticeListWhere">
+        <where>
+            <!-- 非管理员只能看自己收到的消息通知 -->
+            <if test="role != 4">
+                n.`RecieverID` = #{receiverId}
+                and n.`Status` != 3
+            </if>
+
+            <!-- 消息通知状态 -->
+            <if test="dto.statuses != null and dto.statuses.size() > 0">
+                and n.`Status` in
+                <foreach collection="dto.statuses" item="status" open="(" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+
+            <!-- 消息通知类型 -->
+            <if test="dto.noticeTypes != null and dto.noticeTypes.size() > 0">
+                and n.`NoticeType` in
+                <foreach collection="dto.noticeTypes" item="type" open="(" separator="," close=")">
+                    #{type}
+                </foreach>
+            </if>
+
+            <if test="dto.senderName != null and dto.senderName != ''">
+                <!-- 模糊匹配 -->
+                and u.`realName` like concat('%', #{dto.senderName}, '%')
+            </if>
+
+            <if test="dto.title != null and dto.title != ''">
+                <!-- 模糊匹配 -->
+                and n.`Title` like concat('%', #{dto.title}, '%')
+            </if>
+
+            <if test="dto.startDate != null">
+                and n.`CreateTime` >= #{dto.startDate}
+            </if>
+
+            <if test="dto.endDate != null">
+                <!-- 用&lt;代替<解决报错问题 -->
+                and n.`CreateTime` &lt;= #{dto.endDate}
+            </if>
+
+        </where>
+    </sql>
+
+    <!-- 获取消息通知列表（分页） -->
+    <select id="getNoticesByReceiverID" resultMap="NoticeVOMap">
+        select
+            n.`NoticeID`, u.`RealName` as `SenderName`,
+            n.`Title`, n.`Content`,
+            n.`NoticeType`, n.`Status`,
+            n.`CreateTime`
+        from `Notice` n
+        left join `User` u
+        on n.`SenderID` = u.`UserID`
+
+        <include refid="noticeListWhere"/>
+        order by n.`CreateTime` desc
+
+        limit #{offset}, #{size}
+    </select>
+
+    <!-- 获取消息通知列表总数 -->
+    <select id="countNoticesByReceiverID" resultType="long">
+        select count(1)
+        from `Notice` n
+        left join `User` u
+        on n.`SenderID` = u.`UserID`
+
+        <include refid="noticeListWhere"/>
+    </select>
+
+
+
+    <!-- 根据消息通知编号，获取特定消息通知信息 -->
+    <select id="getNoticeById" resultMap="NoticeVOMap">
+        select
+        n.`NoticeID`, u.`RealName` as `SenderName`,
+        n.`Title`, n.`Content`,
+        n.`NoticeType`, n.`Status`,
+        n.`CreateTime`
+        from `Notice` n
+        left join `User` u
+        on n.`SenderID` = u.`UserID`
+
+        <where>
+            n.`NoticeID` = #{noticeId}
+
+            <!-- 非管理员需要判断权限 -->
+            <if test="role != 4">
+                and n.`RecieverID` = #{receiverId}
+            </if>
+
+        </where>
+
+    </select>
+
+</mapper>
