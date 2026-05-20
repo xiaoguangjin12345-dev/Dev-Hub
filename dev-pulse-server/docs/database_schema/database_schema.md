@@ -7,12 +7,12 @@
 
 
 ## 2. E-R图
-![E-R图](/docs/images/E-R_Diagram.svg)
+![E-R图](../images/E-R_Diagram.svg)
 
 
 ## 3. 数据表结构
 - 部分实体的详情或其间接关联信息，查询需求较多；针对这类数据表，采用**反3NF**设计可以减少连表查询次数，提高查询效率。
-- 点击查看其详细设计：[database_table.md](database_table.md)
+- [点击此处查看其详细设计](database_table.md)
 
 
 ## 4. 事务控制

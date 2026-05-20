@@ -238,7 +238,7 @@
 |:---|:---|:---|:---:|:---:|:---|
 | **异常日志编号** | LogID | int | - | NOT NULL | 主键，自增 |
 | 操作用户编号 | UserID | int | - | **NULL** | **外键，关联User.UserID** |
-| 抛出异常的API接口地址 | EndPoint | varchar | 255 | NULL | 异常发生接口 |
+| 异常接口 | EndPoint | varchar | 255 | NULL | 异常发生接口 |
 | 错误信息 | ExceptionMessage | **mediumtext** | - | NOT NULL | 错误信息 |
 | 堆栈详情 | StackTrace | **mediumtext** | - | NOT NULL | 堆栈详情 |
 | 异常时间 | ErrorTime | datetime | - | NOT NULL | 当前时间 |

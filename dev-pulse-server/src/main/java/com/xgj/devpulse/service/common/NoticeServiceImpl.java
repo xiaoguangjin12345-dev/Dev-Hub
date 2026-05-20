@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -55,6 +56,14 @@ public class NoticeServiceImpl implements NoticeService {
 
         // 数据库查询消息通知信息
         NoticeVO result = noticeMapper.getNoticeById(role, userId, noticeId);
+        if(result == null){
+            throw new BusinessException(404, "消息通知异常", true);
+        }
+        else if(result.getStatus() == NoticeStatus.Unread.getValue()){
+            // 将消息状态标记为已读
+            noticeMapper.updateNoticeRead(noticeId, NoticeStatus.Read.getValue());
+        }
+
         return result;
     }
 

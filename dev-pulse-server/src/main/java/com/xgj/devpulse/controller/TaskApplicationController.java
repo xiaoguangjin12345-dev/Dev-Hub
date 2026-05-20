@@ -35,8 +35,8 @@ public class TaskApplicationController {
 
     // 查询任务申请/邀请列表
     @Log("查看任务申请列表")
-    @GetMapping("/applications")
-    public APIResponse<List<TaskApplicationListVO>> getApplications(@RequestParam Byte type){
+    @GetMapping("/applications")                 // required = false，
+    public APIResponse<List<TaskApplicationListVO>> getApplications(@RequestParam(name = "type", required = false) Byte type){
         List<TaskApplicationListVO> applications = taskApplicationService.getTaskApplicationList(type);
         return APIResponse.success(applications, "任务申请列表查询成功");
     }

@@ -27,8 +27,8 @@ public class StatsController {
 
     // 项目进度大盘请求
     @Log("请求查询项目进度")
-    @GetMapping("/project-progress")
-    public APIResponse<String> projectProgress(@RequestParam List<Integer> projectIds) {
+    @GetMapping("/project-progress")        // required = false，非必填
+    public APIResponse<String> projectProgress(@RequestParam(value = "projectIds", required = false) List<Integer> projectIds) {
         String redisKey = statsService.requestProjectProgress(projectIds);
         return APIResponse.success(redisKey, "项目进度大盘请求提交成功");
     }

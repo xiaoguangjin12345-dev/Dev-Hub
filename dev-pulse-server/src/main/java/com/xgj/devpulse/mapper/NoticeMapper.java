@@ -46,6 +46,11 @@ public interface NoticeMapper {
                            @Param("receiverId") Integer receiverId,
                            @Param("noticeId") Integer noticeId);
 
+    // 将消息通知标记为已读
+    @Update("update `Notice` set `Status` = #{status} where `NoticeId` = #{noticeId}")
+    int updateNoticeRead(@Param("noticeId") Integer noticeId, @Param("status") Byte status);
+
+
     // 根据编号，查询消息通知实体
     @Select("select * from `Notice` where `NoticeID` = #{noticeId}")
     NoticeEntity getNoticeEntity(@Param("noticeId") Integer noticeId);

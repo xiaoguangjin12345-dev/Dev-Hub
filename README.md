@@ -74,16 +74,18 @@
 
 
 ## 3. 相关文档
-- **系统分析与设计**：待补充
+- 系统分析与设计 (待补充)
 
-- **数据库设计与实现**：[/docs/database_schema/database_schema.md](/docs/database_schema/database_schema.md)
+- [数据库设计与实现](/dev-pulse-server/docs/database_schema/database_schema.md)
 
 - **组件应用说明**：
-  - Redis缓存应用：[/docs/component/redis.md](/docs/component/redis.md)
-  - Redisson分布式锁应用：[/docs/component/redisson.md](/docs/component/redisson.md)
-  - RabbitMQ应用：[/docs/component/rabbitmq.md](/docs/component/rabbitmq.md)
+  - [Redis缓存应用](/dev-pulse-server/docs/component/redis.md)
+  - [Redisson分布式锁应用](/dev-pulse-server/docs/component/redisson.md)
+  - [RabbitMQ应用](/dev-pulse-server/docs/component/rabbitmq.md)
 
 - **API设计与测试**：
-  - **OpenAPI文档**：[/docs/api-docs.json](/docs/api-docs.json)
+  - [OpenAPI文档](/dev-pulse-server/docs/api-docs.json)
   - **Swagger接口测试**：http://localhost:8080/v2/swagger-ui.html (启动后访问)
+
+- [Python AI微服务模块说明](/ai-microservices/README.md)
 
