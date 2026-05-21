@@ -57,7 +57,7 @@ public class AITaskAssignServiceImpl implements AITaskAssignService {
         // 这里将生成的JSON字符串转化为MD5码，以便拼接成Key
         // 若短期内再次发起项目名称、项目描述、用户prompt完全相同的请求，可以实现秒开；这样可以实现成本与体验双赢
         String jsonHash = DigestUtils.md5DigestAsHex(userPrompt.getBytes(StandardCharsets.UTF_8));
-        String redisKey = "ai:task-assign:project-id" + projectId + ":" + jsonHash;
+        String redisKey = "ai:task-assign:project-id:" + projectId + ":" + jsonHash;
 
         // 如果命中Redis，直接返回
         if (redisService.hasKey(redisKey)) {
@@ -68,6 +68,7 @@ public class AITaskAssignServiceImpl implements AITaskAssignService {
         // 构造请求（消息）体
         TaskAssignMsg request = TaskAssignMsg.builder()
                 .redisKey(redisKey)
+                .redisTtl(5 * 60)
                 .projectName(projectName)
                 .projectDescription(projectDescription)
                 .userPrompt(userPrompt)

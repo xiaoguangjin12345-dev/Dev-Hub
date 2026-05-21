@@ -24,6 +24,7 @@ public interface DevProfileMapper {
     // 更新开发人员简历
     // 按照当前前端版本，对技能标签执行动态更新，具体见xml
     int updateDevProfile(@Param("userId") int userId,
-                         @Param("resumeText") String resumeText,
-                         @Param("skills") String skills);
+                         @Param("skills") String skills,
+                         @Param("resumeText") String resumeText);
+
 }

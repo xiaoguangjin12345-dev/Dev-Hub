@@ -17,19 +17,28 @@ public interface WorkLogMapper {
                 (`TaskID`, `UserID`, `Status`, `WorkDate`,
                  `Hours`, `Description`, `LastTime`)
             value
-                (#{dto.taskId}, #{userId}, 1, #{dto.workDate},
+                (#{dto.taskId}, #{userId}, #{status}, #{dto.workDate},
                  #{dto.hours}, #{dto.description}, #{lastTime})
             """)
     int insertWorkLog(@Param("userId") Integer userId,
+                      @Param("status") Byte status,
                       @Param("dto") ActualHourLogSubmitDTO dto,
                       @Param("lastTime") LocalDateTime lastTime);
+
+    // 更新工时日志的状态（任务状态更新时同步执行）
+    @Update("""
+            update `Work_Log`
+            set `Status` = #{status}
+            where `TaskID` = #{taskId} and `LogID` > 0
+            """)
+    int updateWorkLogStatus(@Param("taskId") Integer taskId, @Param("status") Byte status);
 
     // 修改工时日志记录（与service共同作双重身份校验）
     // 逻辑删除工时日志记录，也用这个接口
     @Update("""
             update `Work_Log`
-            set `Hours` = #{dto.hours},
-                `Description` = #{dto.description}
+            set `Hours` = #{hours},
+                `Description` = #{description}
             where `LogID` = #{logId}
             and `UserID` = #{userId}
             and `Status` = 1

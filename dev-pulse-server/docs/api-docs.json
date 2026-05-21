@@ -1149,7 +1149,7 @@
           {
             "name": "type",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string",
               "format": "byte"
@@ -1180,7 +1180,7 @@
           {
             "name": "projectIds",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "array",
               "items": {
@@ -2526,11 +2526,11 @@
           },
           "startDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "endDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           }
         }
       },
@@ -3125,11 +3125,11 @@
           },
           "startDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "endDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           }
         }
       },
@@ -3394,11 +3394,11 @@
           },
           "startDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
           "endDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           }
         }
       },
@@ -3449,13 +3449,13 @@
           "pmName": {
             "type": "string"
           },
-          "startTime": {
+          "startDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           },
-          "endTime": {
+          "endDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date"
           }
         }
       },

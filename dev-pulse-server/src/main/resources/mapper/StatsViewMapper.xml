@@ -13,6 +13,7 @@
     </resultMap>
 
     <!-- 获取项目大盘列表 -->
+    <!-- TotalTaskCount处，count(*)与count(t.`TaskID`)是存在区别的 -->
     <select id="getProjectProgressList" resultMap="ProjectProgressVOMap">
         select
             p.`ProjectID`,
@@ -24,10 +25,10 @@
                 when p.`Status` = 4 then '待结项'
                 when p.`Status` = 5 then '已归档'
             end as `ProjectStatus`,
-            count(*) as `TotalTaskCount`,
+            count(t.`TaskID`) as `TotalTaskCount`,
             count(case when t.`Status` = 4 then 1 end) as `CompletedTaskCount`,
             case
-                when count(*) > 0 then
+                when count(t.`TaskID`) > 0 then
                     count(case when t.`Status` = 4 then 1 end) / count(*) * 100.0
                 else
                     0

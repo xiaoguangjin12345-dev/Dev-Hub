@@ -33,7 +33,7 @@ public class ExecuteAcceptApplicationServiceImpl implements ExecuteAcceptApplica
                 (appId, TaskApplicationStatus.Approved.getValue(), LocalDateTime.now());
         // 将该记录对应任务的其他申请记录状态，标记为 已失效
         taskApplicationMapper.updateTaskApplicationStatusByTaskId
-                (appId, taskId, TaskApplicationStatus.Approved.getValue(), LocalDateTime.now());
+                (appId, taskId, TaskApplicationStatus.Expired.getValue(), LocalDateTime.now());
 
         // 更新任务实体的开发人员匹配信息
         taskMapper.updateTaskAssignInfo

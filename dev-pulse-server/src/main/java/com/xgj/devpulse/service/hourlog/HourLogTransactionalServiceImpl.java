@@ -4,6 +4,7 @@ import com.xgj.devpulse.common.cache.RedisService;
 import com.xgj.devpulse.common.exception.AuthorizationException;
 import com.xgj.devpulse.common.exception.BusinessException;
 import com.xgj.devpulse.enums.common.ProcessStatus;
+import com.xgj.devpulse.enums.hourlog.ActualHourLogStatus;
 import com.xgj.devpulse.mapper.TaskChangeLogMapper;
 import com.xgj.devpulse.mapper.TaskMapper;
 import com.xgj.devpulse.mapper.WorkLogMapper;
@@ -30,7 +31,8 @@ public class HourLogTransactionalServiceImpl implements HourLogTransactionalServ
     public boolean executeActualHourLogSubmit(ActualHourLogMsg msg) {
         try{
             // 数据库添加工时记录
-            workLogMapper.insertWorkLog(msg.getUserId(), msg.getDto(), LocalDateTime.now());
+            workLogMapper.insertWorkLog(msg.getUserId(), ActualHourLogStatus.Editable.getValue(),
+                                        msg.getDto(), LocalDateTime.now());
             // 任务实体中，总实际工时增加
             taskMapper.updateActualHoursById(msg.getDto().getTaskId(), msg.getDto().getHours());
 

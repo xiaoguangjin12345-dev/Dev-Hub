@@ -4,10 +4,12 @@ import com.xgj.devpulse.common.cache.RedisService;
 import com.xgj.devpulse.common.context.UserContext;
 import com.xgj.devpulse.common.exception.AuthorizationException;
 import com.xgj.devpulse.common.exception.BusinessException;
+import com.xgj.devpulse.enums.hourlog.ActualHourLogStatus;
 import com.xgj.devpulse.enums.task.TaskStatus;
 import com.xgj.devpulse.enums.taskreview.TaskReviewResult;
 import com.xgj.devpulse.enums.user.Role;
 import com.xgj.devpulse.mapper.TaskMapper;
+import com.xgj.devpulse.mapper.WorkLogMapper;
 import com.xgj.devpulse.pojo.dto.notice.NoticeApproveDTO;
 import com.xgj.devpulse.pojo.dto.taskreview.TaskDeliverableDTO;
 import com.xgj.devpulse.pojo.entity.TaskEntity;
@@ -40,6 +42,7 @@ public class TaskReviewServiceImpl implements TaskReviewService {
     private final PerformanceService performanceService;
     // Redis服务
     private final RedisService redisService;
+    private final WorkLogMapper workLogMapper;
 
     // 开发人员提交成果，生成初始任务评审记录
     @Transactional(rollbackFor = Exception.class)          // 涉及多表增改操作，开启事务，且涉及文件上传，应对Exception触发
@@ -99,6 +102,8 @@ public class TaskReviewServiceImpl implements TaskReviewService {
         taskReviewMapper.insertTaskReview(taskReview);
         // 任务实体，同步更新任务提交信息（状态机变更）
         taskMapper.updateTaskReviewInfo(dto.getTaskId(), TaskStatus.Review.getValue(), task.getRevision());
+        // 锁定该任务的实际工时记录（只读）
+        workLogMapper.updateWorkLogStatus(dto.getTaskId(), ActualHourLogStatus.Readonly.getValue());
 
         // Redis删除相应任务详情键（异步）
         redisService.deleteTaskDetailsKey(dto.getTaskId());
@@ -139,6 +144,8 @@ public class TaskReviewServiceImpl implements TaskReviewService {
         }else{
             // 针对任务实体，更新任务评审不通过的相关信息
             taskMapper.updateRejectReviewInfo(taskReview.getTaskID(), TaskStatus.Ongoing.getValue());
+            // 更新该任务的实际工时记录（可修改）
+            workLogMapper.updateWorkLogStatus(taskReview.getTaskID(), ActualHourLogStatus.Editable.getValue());
         }
 
         String taskName = taskMapper.getTaskNameByTaskId(taskReview.getTaskID());

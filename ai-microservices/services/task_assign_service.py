@@ -103,18 +103,18 @@ async def execute_task_assign(msg: dict):
 
     except Exception as e:
         # Redis写入失败态
-        await set_redis(dto.redis_key, ProcessStatus.Fail.value, None)
+        await set_redis(dto.redis_key, 60, ProcessStatus.Fail.value, None)
         raise Exception("AI任务拆解服务失败", e)
 
     # 校验失败
     if check_result(reply) == False:
         # Redis写入失败态
-        await set_redis(dto.redis_key, ProcessStatus.Fail.value, None)
+        await set_redis(dto.redis_key, 60, ProcessStatus.Fail.value, None)
         raise Exception("格式校验失败")
 
     # Redis写入成功态及其数据
     reply = [item.model_dump(by_alias=True) for item in reply]     # 转换为小驼峰
-    await set_redis(dto.redis_key, ProcessStatus.Success.value, reply)
+    await set_redis(dto.redis_key, dto.redis_ttl, ProcessStatus.Success.value, reply)
 
 # 校验数据是否合法
 def check_result(result : list[TaskAssignResponse]) -> bool:

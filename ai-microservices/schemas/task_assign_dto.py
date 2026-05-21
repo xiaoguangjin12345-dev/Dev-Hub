@@ -8,6 +8,7 @@ class TaskAssignMsg(BaseModel):
         populate_by_name = True     # 允许通过小驼峰名称从JSON中取值
     )
     redis_key: str
+    redis_ttl: int
     project_name: str
     project_description: str
     user_prompt: str
