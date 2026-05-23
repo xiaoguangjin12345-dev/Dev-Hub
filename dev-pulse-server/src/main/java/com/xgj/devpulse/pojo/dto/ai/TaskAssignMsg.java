@@ -8,6 +8,7 @@ import lombok.Data;
 public class TaskAssignMsg {
     private String redisKey;
     private int redisTtl;
+    private Integer currentUserId;
     private String projectName;
     private String projectDescription;
     private String userPrompt;

@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     rabbitmq_password: str = "guest"
 
     # Java后端配置
-    java_client_url: str = "http://localhost:8080/v2/sdk/ai/redis"
+    java_client_url: str = "http://localhost:8080/v2/sdk/ai"
 
     # API配置
     deepseek_api_url: str = "https://api.deepseek.com/v1"

@@ -218,4 +218,18 @@ CREATE TABLE if not exists `Error_Log` (
     PRIMARY KEY (`LogID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统异常日志表结构';
 
+-- Token使用日志表
+CREATE TABLE if not exists `Token_Usage_Log` (
+    `LogID` int AUTO_INCREMENT COMMENT 'Token使用日志编号，主键，自增',
+    `UserID` int NULL COMMENT '用户编号，外键，关联 User.UserID',
+    `ModelName` varchar(100) not null comment '模型名称',
+    `ResponseID` varchar(128) not null comment '回答的唯一标识，即响应请求体的id字段',
+    `Type` varchar(100) not NULL COMMENT '业务类型',
+    `PromptTokens` int not null comment '输入Token',
+    `CachedTokens` int not null comment '缓存命中的Token',
+    `CompletionTokens` int not null comment '输出Token',
+    `TotalTokens` int not null comment '总Token',
+    `CreateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录产生时间',
+    PRIMARY KEY (`LogID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Token使用日志表结构';
 

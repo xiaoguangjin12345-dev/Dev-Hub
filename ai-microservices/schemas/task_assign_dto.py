@@ -9,6 +9,7 @@ class TaskAssignMsg(BaseModel):
     )
     redis_key: str
     redis_ttl: int
+    current_user_id: int
     project_name: str
     project_description: str
     user_prompt: str

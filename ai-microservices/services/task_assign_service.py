@@ -1,8 +1,11 @@
 import json
+import asyncio
 import textwrap
-from openai import OpenAI, AsyncOpenAI
+from openai import AsyncOpenAI
+from openai.types.chat import ChatCompletion
 
-from client.java_client import set_redis
+from client.client_config import get_log_thread_pool
+from client.java_request import set_redis, insert_token_usage_log
 from core.config import settings
 
 from enums.process_status import ProcessStatus
@@ -88,7 +91,7 @@ async def execute_task_assign(msg: dict):
         prompt = prompt_format.format(dto.project_name, dto.project_description, user_prompt)
 
         # 构造请求体
-        request = await client.chat.completions.create(
+        request: ChatCompletion = await client.chat.completions.create(
             model = "qwen-plus",
             messages = [
                 {"role": "system", "content": role_setting},
@@ -97,6 +100,11 @@ async def execute_task_assign(msg: dict):
             tools = tools,
             tool_choice = tool_choice
         )
+        # 构造Token使用记录数据并写入（异步）
+        loop = asyncio.get_event_loop()
+        thread = get_log_thread_pool()
+        loop.run_in_executor(thread, insert_token_usage_log, dto.current_user_id, "qwen-plus", "任务拆解建议", request)
+
         # 反序列化结果并获取
         reply = json.loads(request.choices[0].message.tool_calls[0].function.arguments)["tasks"]
         reply = [TaskAssignResponse(**item) for item in reply]
@@ -115,6 +123,7 @@ async def execute_task_assign(msg: dict):
     # Redis写入成功态及其数据
     reply = [item.model_dump(by_alias=True) for item in reply]     # 转换为小驼峰
     await set_redis(dto.redis_key, dto.redis_ttl, ProcessStatus.Success.value, reply)
+
 
 # 校验数据是否合法
 def check_result(result : list[TaskAssignResponse]) -> bool:

@@ -1,57 +1,37 @@
 import json
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-import pika
+
+import aio_pika
+from aio_pika import IncomingMessage
+
 from core.config import settings
 from services.task_assign_service import execute_task_assign
 
-# 允许同时处理5个AI任务
-executor = ThreadPoolExecutor(max_workers = 5)
+# 调用AI任务拆解模块
+async def on_message(message: IncomingMessage):
+    async with message.process():
+        msg_data = json.loads(message.body.decode())
+        # 直接在异步上下文中调用
+        await execute_task_assign(msg_data)
 
-# 接收队列请求
-def on_message(ch, method, properties, msg_str):
-    message = json.loads(msg_str)
-    # 任务进入线程池
-    executor.submit(run_worker, ch, method, message)
-
-# 调用AI任务拆解模块并返回ack
-def run_worker(ch, method, message):
-    try:
-        # 在独立线程中运行任务拆解模块
-        asyncio.run(execute_task_assign(message))
-    except Exception as e:
-        raise Exception("AI任务拆解服务失败", e)
-    finally:
-        # 使用add_callback_threadsafe发送ack
-        ch.connection.add_callback_threadsafe(
-            lambda: ch.basic_ack(delivery_tag=method.delivery_tag)
-        )
-
-
-# 连接RabbitMQ
-def start_listening():
-    # 创建身份验证对象
-    credentials = pika.PlainCredentials(
-        username = settings.rabbitmq_user,
-        password = settings.rabbitmq_password
+# 监听AI请求消息
+async def start_listening_async():
+    # 异步连接 RabbitMQ
+    connection = await aio_pika.connect_robust(
+        host=settings.rabbitmq_host,
+        port=settings.rabbitmq_port,
+        login=settings.rabbitmq_user,
+        password=settings.rabbitmq_password,
+        virtualhost='/'
     )
 
-    # 将credentials加入连接参数
-    parameters = pika.ConnectionParameters(
-        host = settings.rabbitmq_host,
-        port = settings.rabbitmq_port,
-        virtual_host='/',
-        credentials=credentials
-    )
+    async with connection:
+        channel = await connection.channel()
+        await channel.set_qos(prefetch_count=5)
 
-    # 创建连接对象
-    connection = pika.BlockingConnection(parameters)
-    channel = connection.channel()
+        queue = await channel.declare_queue('sys.ai.request.queue', durable=True)
+        await queue.consume(on_message)
 
-    # 确保队列存在
-    channel.queue_declare(queue='sys.ai.request.queue', durable=True)
-
-    channel.basic_qos(prefetch_count=5)
-    channel.basic_consume(queue='sys.ai.request.queue', on_message_callback=on_message)
-    channel.start_consuming()
-
+        # 保持运行
+        await asyncio.Future()

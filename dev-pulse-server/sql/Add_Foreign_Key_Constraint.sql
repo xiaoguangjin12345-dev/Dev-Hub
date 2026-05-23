@@ -70,3 +70,7 @@ ADD CONSTRAINT `fk_oplog_user` FOREIGN KEY (`UserID`) REFERENCES `User` (`UserID
 ALTER TABLE `Error_Log`
 ADD CONSTRAINT `fk_errlog_user` FOREIGN KEY (`UserID`) REFERENCES `User` (`UserID`) ON DELETE SET NULL;
 
+-- Token使用日志表
+ALTER TABLE `Token_Usage_Log`
+ADD CONSTRAINT `fk_tokenlog_user` FOREIGN KEY (`UserID`) REFERENCES `User` (`UserID`) ON DELETE SET NULL;
+

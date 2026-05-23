@@ -243,3 +243,18 @@
 | 堆栈详情 | StackTrace | **mediumtext** | - | NOT NULL | 堆栈详情 |
 | 异常时间 | ErrorTime | datetime | - | NOT NULL | 当前时间 |
 
+#### 17. Token使用日志表 (Token_Usage_Log)
+
+| 字段名 | 物理名 | 数据类型 | 长度 | 允许空 | 字段描述 |
+|:---|:---|:---|:---:|:---:|:---|
+| **使用日志编号** | LogID | int | - | NOT NULL | 主键，自增 |
+| 请求AI的用户编号 | UserID | int | - | **NULL** | **外键，关联User.UserID** |
+| 模型名称 | ModelName | varchar | 100 | NOT NULL | 模型名称 |
+| 响应ID | ResponseID | varchar | 128 | NOT NULL | 回答的唯一标识，即响应请求体的id字段 |
+| 业务类型 | Type | varchar | 100 | NOT NULL | 根据具体的AI服务赋值 |
+| 输入Token | PromptTokens | int | - | NOT NULL | 输入Token |
+| 缓存命中的Token | CachedTokens | int | - | NOT NULL | 缓存命中的Token |
+| 输出Token | CompletionTokens | int | - | NOT NULL | 输出Token |
+| 总Token | TotalTokens | int | - | NOT NULL | 总Token |
+| 记录产生时间 | CreateTime | datetime | - | NOT NULL | 当前时间 |
+

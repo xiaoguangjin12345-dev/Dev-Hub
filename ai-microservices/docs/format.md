@@ -28,7 +28,7 @@
 ### 响应
 ```json
 {
-  "id": "chatcmpl-123",
+  "id": "chatcmpl-123",    // Token日志使用
   "object": "chat.completion",
   "created": 1677652288,
   "model": "gpt-3.5-turbo-0613",
@@ -42,10 +42,14 @@
       "finish_reason": "stop"
     }
   ],
+  // Token日志核心数据
   "usage": {
     "prompt_tokens": 9,
     "completion_tokens": 12,
-    "total_tokens": 21
+    "total_tokens": 21,
+    "prompt_tokens_details": {
+      "cached_tokens": 5
+    }
   }
 }
 ```
@@ -155,7 +159,10 @@
   "usage": {
     "prompt_tokens": 120,
     "completion_tokens": 45,
-    "total_tokens": 165
+    "total_tokens": 165,
+    "prompt_tokens_details": {
+      "cached_tokens": 40
+    }
   }
 }
 ```

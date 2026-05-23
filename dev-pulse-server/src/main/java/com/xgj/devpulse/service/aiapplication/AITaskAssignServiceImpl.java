@@ -69,6 +69,7 @@ public class AITaskAssignServiceImpl implements AITaskAssignService {
         TaskAssignMsg request = TaskAssignMsg.builder()
                 .redisKey(redisKey)
                 .redisTtl(5 * 60)
+                .currentUserId(userId)
                 .projectName(projectName)
                 .projectDescription(projectDescription)
                 .userPrompt(userPrompt)
