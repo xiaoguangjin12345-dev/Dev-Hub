@@ -8,7 +8,7 @@
             `ProjectID`, `TaskName`, `TaskDescription`,
             `Status`, `Revision`,
             `EstimatedHours`, `ActualHours`, `CreateTime`
-        ) value (
+        ) values (
             #{dto.ProjectID}, #{dto.TaskName}, #{dto.TaskDescription},
             #{dto.Status}, #{dto.Revision},
             #{dto.EstimatedHours}, #{dto.ActualHours}, #{dto.CreateTime}

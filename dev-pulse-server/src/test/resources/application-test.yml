@@ -1,0 +1,16 @@
+spring:
+  datasource:                          # 使用H2内存数据库
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1;IGNORECASE=TRUE      # JVM运行期间不清空数据库
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  sql:
+    init:
+      mode: always                      # 每次启动测试时运行建表脚本
+      schema-locations: classpath:schema-test.sql
+  flyway:
+    enabled: false
+  h2:
+    console:
+      enabled: true                    # 调试时开启H2控制台
+

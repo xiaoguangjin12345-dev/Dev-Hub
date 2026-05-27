@@ -16,7 +16,7 @@ public interface TaskReviewMapper {
                 (`TaskID`, `DevID`, `PMID`,
                  `GitUrl`, `ArchiveUrl`, `DocUrl`,
                  `Revision`, `Result`, `SubmitTime`)
-            value
+            values
                 (#{TaskID}, #{DevID}, #{PMID},
                  #{GitUrl}, #{ArchiveUrl}, #{DocUrl},
                  #{Revision}, #{Result}, #{SubmitTime})

@@ -13,7 +13,7 @@ public interface TaskApplicationMapper {
     @Insert("""
             insert into `Task_Application`
                 (`TaskID`, `PMID`, `DevID`, `Type`, `Status`, `ApplyTime`)
-            value
+            values
                 (#{taskId}, #{pmId}, #{devId}, #{type}, 1, #{applyTime})
             """)
     int insertTaskApplication(@Param("taskId") Integer taskId,
@@ -26,7 +26,7 @@ public interface TaskApplicationMapper {
     @Insert("""
             insert into `Task_Application`
                 (`TaskID`, `PMID`, `DevID`, `Type`, `Status`, `ApplyTime`, `DealTime`)
-            value
+            values
                 (#{taskId}, #{pmId}, #{devId}, #{type}, 2, #{localTime}, #{localTime})
             """)
     int insertSuccessApplication(@Param("taskId") Integer taskId,

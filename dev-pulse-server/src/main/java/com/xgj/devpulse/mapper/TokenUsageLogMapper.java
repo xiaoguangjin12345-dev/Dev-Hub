@@ -16,7 +16,7 @@ public interface TokenUsageLogMapper {
                 (`UserID`, `ModelName`, `ResponseID`, `Type`,
                  `PromptTokens`, `CachedTokens`, `CompletionTokens`, `TotalTokens`,
                  `CreateTime`)
-            value 
+            values
                 (#{dto.userId}, #{dto.modelName}, #{dto.ResponseId}, #{dto.type},
                  #{dto.promptTokens}, #{dto.cachedTokens}, #{dto.completionTokens}, #{dto.totalTokens},
                  #{createTime})

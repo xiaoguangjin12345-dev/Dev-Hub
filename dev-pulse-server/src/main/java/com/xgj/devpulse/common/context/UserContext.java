@@ -1,6 +1,7 @@
 package com.xgj.devpulse.common.context;
 
 import com.xgj.devpulse.enums.user.Role;
+import com.xgj.devpulse.pojo.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 
 public class UserContext {
@@ -48,7 +49,7 @@ public class UserContext {
         return (claims != null && claims.get("realName") != null) ? claims.get("realName").toString() : "";
     }
 
-    // 必须：清理 ThreadLocal，防止内存泄漏（重要！）
+    // 清理ThreadLocal，防止内存泄漏
     public static void remove() {
         USER_CLAIMS_HOLDER.remove();
     }

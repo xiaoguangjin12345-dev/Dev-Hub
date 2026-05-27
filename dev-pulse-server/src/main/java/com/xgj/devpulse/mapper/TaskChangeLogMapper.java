@@ -16,7 +16,7 @@ public interface TaskChangeLogMapper {
     @Insert("""
             insert into `Task_Change_Log`
                 (`TaskID`, `ProjectID`, `PMID`, `OldHours`, `NewHours`, `ChangeReason`, `ChangeTime`)
-            value
+            values
                 (#{taskId}, #{projectId}, #{userId}, #{oldHours}, #{newHours}, #{changeReason}, #{changeTime})
             """)
     int insertTaskChangeLog(@Param("userId") Integer userId,

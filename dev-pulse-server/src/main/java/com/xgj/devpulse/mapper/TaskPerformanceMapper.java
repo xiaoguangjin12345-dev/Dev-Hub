@@ -20,7 +20,7 @@ public interface TaskPerformanceMapper {
                 (`TaskID`, `PMID`, `DevID`,
                  `Quality`, `Efficiency`, `PMScore`,
                  `TotalScore`, `Status`)
-            value
+            values
                 (#{TaskID}, #{PMID}, #{DevID},
                 #{Quality}, #{Efficiency}, #{PMScore},
                 #{TotalScore}, #{Status})

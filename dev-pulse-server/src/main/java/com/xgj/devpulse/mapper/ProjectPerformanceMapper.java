@@ -21,7 +21,7 @@ public interface ProjectPerformanceMapper {
                 (`ProjectID`, `PMOID`, `PMID`,
                  `Resource`, `Modify`, `PMOScore`,
                  `TotalScore`, `Status`)
-            value
+            values
                 (#{ProjectID}, #{PMOID}, #{PMID},
                 #{Resource}, #{Modify}, #{PMOScore},
                 #{TotalScore}, #{Status})

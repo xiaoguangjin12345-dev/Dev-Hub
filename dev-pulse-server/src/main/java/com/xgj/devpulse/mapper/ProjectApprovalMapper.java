@@ -13,7 +13,7 @@ public interface ProjectApprovalMapper {
             insert into `Project_Approval`
                 (`ProjectID`, `PMOID`, `ApprovalType`,
                  `Result`, `Comment`, `ApprovalTime`)
-            value
+            values
                 (#{projectId}, #{pmoId}, #{approveType},
                  #{result}, #{comment}, #{approvalTime});
             """)

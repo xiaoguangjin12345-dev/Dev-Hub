@@ -11,7 +11,7 @@ public interface ErrorLogMapper {
     @Insert("""
             insert into `Error_Log`
                 (`UserID`, `EndPoint`, `ExceptionMessage`, `StackTrace`, `ErrorTime`)
-            value
+            values
                 (#{UserID}, #{EndPoint}, #{ExceptionMessage}, #{StackTrace}, #{ErrorTime})
             """)
     int insertErrorLog(ErrorLogEntity dto);

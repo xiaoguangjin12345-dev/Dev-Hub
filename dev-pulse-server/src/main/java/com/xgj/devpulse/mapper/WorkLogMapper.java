@@ -16,7 +16,7 @@ public interface WorkLogMapper {
             insert into `Work_Log`
                 (`TaskID`, `UserID`, `Status`, `WorkDate`,
                  `Hours`, `Description`, `LastTime`)
-            value
+            values
                 (#{dto.taskId}, #{userId}, #{status}, #{dto.workDate},
                  #{dto.hours}, #{dto.description}, #{lastTime})
             """)

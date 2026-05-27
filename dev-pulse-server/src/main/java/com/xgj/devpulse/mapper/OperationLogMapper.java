@@ -11,7 +11,7 @@ public interface OperationLogMapper {
     @Insert("""
             insert into `Operation_Log`
                 (UserID, ApiRoute, ExecutionTime, StatusCode, IpAddress, CreateTime)
-            value
+            values
                 (#{UserID}, #{ApiRoute}, #{ExecutionTime}, #{StatusCode}, #{IpAddress}, #{CreateTime})
             """)
     int insertOperationLog(OperationLogEntity dto);
